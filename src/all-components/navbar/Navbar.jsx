@@ -80,7 +80,7 @@ const Navbar = () => {
     }, []);
 
     return (
-        <div className="bg-[#ff0768] text-white shadow-md py-2 px-4 md:px-6 for_nav_font text-[17px]">
+        <div className="bg-[#ff0768] text-white shadow-md py-1 px-4 md:px-6 for_nav_font text-[17px]">
             <div className="max-w-7xl mx-auto flex items-center justify-between">
 
                 {/* Left Side: Logo with circular white background */}
@@ -275,7 +275,7 @@ const Navbar = () => {
                         <input
                             type="text"
                             placeholder="Search..."
-                            className="pl-10 pr-3 py-1.5 border-2 border-white rounded-md focus:outline-none focus:ring-2 hover:text-black text-sm"
+                            className="pl-10 pr-3 py-1.5 border-2 border-white rounded-sm focus:outline-none focus:ring-2 hover:text-black text-sm"
                         />
                         <FiSearch className="absolute left-3 top-2.5 text-white font-bold" size={16} />
                     </div>
@@ -285,7 +285,7 @@ const Navbar = () => {
                         {user ? (
                             <button
                                 onClick={handleLogout}
-                                className="relative px-3 py-1.5 border-2 border-gray-800 text-white font-bold overflow-hidden group transition-all duration-300 animate-border-pulse block text-center"
+                                className="relative px-3 py-1.5 border-2 border-white text-white font-bold overflow-hidden group transition-all duration-300 animate-border-pulse block text-center"
                             >
                                 <span className="relative z-10 group-hover:text-white transition-colors duration-300 text-white font-bold">
                                     Logout
@@ -295,7 +295,7 @@ const Navbar = () => {
                         ) : (
                             <Link
                                 to="/sign-in"
-                                    className="relative px-3 py-1.5 border-2 border-white text-white font-bold overflow-hidden group transition-all duration-300 animate-border-pulse block text-center"
+                                    className="relative px-3 py-[2px] border-2 border-white text-white font-bold overflow-hidden group transition-all duration-300 animate-border-pulse block text-center"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
                                 <span className="relative z-10 group-hover:text-white transition-colors duration-300">
