@@ -8,6 +8,7 @@ import Home from './all-components/home-page/Home.jsx'
 import SignInUp from './all-components/popup-sign&up/SignInUp.jsx'
 import SignIn from './all-components/popup-sign&up/SignIn.jsx'
 import AuthContextProvider from './all-components/auth-porvider-context/AuthContext.jsx'
+import PasswordReset from './all-components/forgot-pass-page/PasswordReset.jsx'
 
 const routes = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const routes = createBrowserRouter([
       {
         path: "/sign-in",
         element: <SignIn></SignIn>
+      },
+      {
+        path: "/password-reset",
+        element: <PasswordReset></PasswordReset>
       }
       
 

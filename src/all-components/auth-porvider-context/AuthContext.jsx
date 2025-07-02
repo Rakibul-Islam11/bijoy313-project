@@ -68,6 +68,7 @@ const AuthContextProvider = ({ children }) => {
         logOut,
         updateUserProfile,
         sendVerificationEmail,
+        
     };
 
     return (

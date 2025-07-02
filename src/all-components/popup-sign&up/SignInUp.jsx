@@ -52,7 +52,7 @@ const SignInUp = () => {
                     if (user.emailVerified) {
                         clearInterval(interval);
                         // Update backend that email is verified
-                        axios.patch('http://localhost:4000/users/verify-user', {
+                        axios.patch('https://bijoy-server.vercel.app/users/verify-user', {
                             email: user.email,
                             verificationMethod: 'email',
                             isVerified: true
@@ -167,7 +167,7 @@ const SignInUp = () => {
             const newCode = generateRandomCode();
 
             try {
-                const response = await axios.get(`http://localhost:4000/users/check-referral/${newCode}`);
+                const response = await axios.get(`https://bijoy-server.vercel.app/users/check-referral/${newCode}`);
 
                 if (!response.data.exists) {
                     return newCode;
@@ -185,7 +185,7 @@ const SignInUp = () => {
 
     const saveUserToDatabase = async (userData) => {
         try {
-            const response = await axios.post('http://localhost:4000/users', userData);
+            const response = await axios.post('https://bijoy-server.vercel.app/users', userData);
             return response.data;
         } catch (error) {
             console.error('Error saving user to database:', error);
@@ -196,28 +196,25 @@ const SignInUp = () => {
     const sendOtpToPhone = async (phoneNumber) => {
         try {
             setOtpError('');
-            const newOtp = Math.floor(100000 + Math.random() * 900000);
-            setGeneratedOtp(newOtp.toString());
-
-            const message = `Your bijoy-313 verification OTP is: ${newOtp}`;
-
-            const response = await axios.get(`http://bulksmsbd.net/api/smsapi`, {
-                params: {
-                    api_key: 'bFmnZedJjsrnK1pL9LZU',
-                    type: 'text',
-                    number: phoneNumber.replace('+', ''),
-                    senderid: '8809617627038',
-                    message: message
-                }
+            const response = await axios.post('https://bijoy-server.vercel.app/api/send-otp', {
+                phoneNumber: phoneNumber
             });
 
-            if (response.data) {
+            if (response.data.success) {
+                // For development, you can log the OTP
+                console.log('OTP:', response.data.otp); // Remove this in production
+                setGeneratedOtp(response.data.otp);
                 setVerificationSent(true);
                 return true;
             }
             return false;
         } catch (error) {
             console.error('Error sending OTP:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'OTP Sending Failed',
+                text: 'Failed to send OTP. Please try again later.'
+            });
             return false;
         }
     };
@@ -229,27 +226,28 @@ const SignInUp = () => {
                 return;
             }
 
-            if (otp === generatedOtp) {
-                // Update user verification status in backend
-                try {
-                    await axios.patch('http://localhost:4000/users/verify-user', {
-                        email: verificationEmail,
-                        verificationMethod: 'phone',
-                        isVerified: true
-                    });
+            // Verify OTP with backend
+            const verificationResponse = await axios.post('https://bijoy-server.vercel.app/api/verify-otp', {
+                phoneNumber: verificationPhone,
+                otp: otp
+            });
 
-                    setShowVerificationPopup(false);
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Verification Successful!',
-                        text: 'Your phone number has been verified successfully.',
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                } catch (error) {
-                    console.error('Error updating verification status:', error);
-                    setOtpError('Verification update failed. Please try again.');
-                }
+            if (verificationResponse.data.success) {
+                // Update user verification status in backend
+                await axios.patch('https://bijoy-server.vercel.app/users/verify-user', {
+                    email: verificationEmail,
+                    verificationMethod: 'phone',
+                    isVerified: true
+                });
+
+                setShowVerificationPopup(false);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Verification Successful!',
+                    text: 'Your phone number has been verified successfully.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
             } else {
                 setOtpError('Wrong OTP. Please try again.');
             }
@@ -306,7 +304,7 @@ const SignInUp = () => {
 
             try {
                 // প্রথমে MongoDB-তে ফোন নাম্বার চেক করুন
-                const checkPhoneResponse = await axios.post('http://localhost:4000/users/check-phone', {
+                const checkPhoneResponse = await axios.post('https://bijoy-server.vercel.app/users/check-phone', {
                     phone: formData.phone
                 });
 
@@ -335,7 +333,7 @@ const SignInUp = () => {
                     email: formData.email,
                     phone: formData.phone,
                     passwordHash: user.uid,
-                    photoURL: "https://i.ibb.co/h1m0f8yD/Untitled-design-1.png",
+                    photoURL: "https://i.ibb.co/6cJ5ggMC/user-icon-on-transparent-background-free-png.webp",
                     referralCode,
                     referredBy: formData.referCode || null,
                     isOtpVerified: false,
@@ -367,7 +365,7 @@ const SignInUp = () => {
                 };
 
                 await saveUserToDatabase(userData);
-                await updateUserProfile(formData.name, "https://i.ibb.co/h1m0f8yD/Untitled-design-1.png", referralCode);
+                await updateUserProfile(formData.name, "https://i.ibb.co/6cJ5ggMC/user-icon-on-transparent-background-free-png.webp", referralCode);
 
                 setVerificationEmail(formData.email);
                 setVerificationPhone(formData.phone);
@@ -435,7 +433,7 @@ const SignInUp = () => {
     };
 
     return (
-        <div className="bg-blue-100 h-screen">
+        <div className="bg-blue-100 h-screen px-5">
             {/* Verification Popup */}
             {showVerificationPopup && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -600,196 +598,193 @@ const SignInUp = () => {
                 </div>
             )}
 
-            <div className="flex flex-col lg:flex-row w-full max-w-4xl mx-auto rounded-2xl overflow-hidden gap-4 md:gap-0 pt-5 shadow-2xl">
-                {/* Left Section */}
-                <div className="w-full lg:w-[50%] hidden md:block">
-                    <div className="bg-white rounded-tl-2xl rounded-bl-2xl rounded-tr-none rounded-br-none h-full w-full flex flex-col ">
-                        <div className="mt-auto">
-                            <img
-                                src={popupimg}
-                                alt="Working Woman"
-                                className="rounded-lg w-full object-contain mx-auto"
-                            />
+            <div className="pt-8 md:pt-0">
+                <div className="flex flex-col lg:flex-row w-full max-w-4xl mx-auto rounded-2xl overflow-hidden gap-4 md:gap-0  md:pt-5 border bg-white md:border-0 border-gray-200 shadow-2xl">
+                    {/* Left Section */}
+                    <div className="w-full lg:w-[50%]  hidden md:block">
+                        <div className="bg-red-600 rounded-tl-2xl rounded-bl-2xl rounded-tr-none rounded-br-none h-full w-full flex flex-col">
+                            <div className="mt-auto">
+                                <img
+                                    src={popupimg}
+                                    alt="Working Woman"
+                                    className="rounded-lg w-full object-contain mx-auto"
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Right Section */}
-                <div className="w-full lg:w-[50%] for_loghead_font">
-                    <div className="bg-white p-4 rounded-r-2xl rounded-l-none pb-8 w-full">
-                        <h2 className="text-lg font-bold mb-3 text-center bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent for_loghead_font">
-                            Join as a freelancer or client
-                        </h2>
+                    {/* Right Section */}
+                    <div className="w-full lg:w-[50%]  for_loghead_font">
+                        <div className=" p-4 rounded-r-2xl rounded-l-none md:rounded-none pb-8 w-full">
+                            <h2 className="text-lg font-bold mb-3 text-center bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent for_loghead_font">
+                                Join as a freelancer or client
+                            </h2>
 
-                        {/* User Type Selection */}
-                        <div className="flex justify-center gap-2">
-                            {['freelancer', 'client'].map(type => (
-                                <label key={type}
-                                    className={`px-3 py-1.5 border rounded-md cursor-pointer transition-all text-sm ${userType === type ? 'border-blue-500 bg-blue-50 shadow-inner text-blue-600' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
-                                    <input
-                                        type="radio"
-                                        name="userType"
-                                        checked={userType === type}
-                                        onChange={() => setUserType(type)}
-                                        className="hidden"
-                                    />
-                                    {type.charAt(0).toUpperCase() + type.slice(1)}
-                                </label>
-                            ))}
-                        </div>
-
-                        {/* Two Column Form */}
-                        <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5 text-sm">
-                            <div>
-                                <label className="block mb-1 text-gray-700">Full Name*</label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    placeholder="Your full name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    className={`w-full px-2 py-1.5 border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-blue-500 placeholder-gray-400 text-gray-500`}
-                                    required
-                                />
-                                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
-                            </div>
-                            <div>
-                                <div className="flex flex-row items-center">
-                                    <label className="block mb-1 text-gray-700">E-Mail*</label>
-                                    {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
-                                </div>
-
-                                <input
-                                    type="email"
-                                    name="email"
-                                    placeholder="Your email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    className={`w-full px-2 py-1.5 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-blue-500 placeholder-gray-400 text-gray-500`}
-                                    required
-                                />
-                                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                            {/* User Type Selection */}
+                            <div className="flex justify-center gap-2">
+                                {['freelancer', 'client'].map(type => (
+                                    <label key={type}
+                                        className={`px-3 py-1.5 border rounded-md cursor-pointer transition-all text-sm ${userType === type ? 'border-blue-500 bg-blue-50 shadow-inner text-blue-600' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
+                                        <input
+                                            type="radio"
+                                            name="userType"
+                                            checked={userType === type}
+                                            onChange={() => setUserType(type)}
+                                            className="hidden"
+                                        />
+                                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                                    </label>
+                                ))}
                             </div>
 
-                            <div className="sm:col-span-2">
-                                <label className="block mb-1 text-gray-700">Mobile*</label>
-                                <PhoneInput
-                                    country={'bd'}
-                                    value={phone}
-                                    onChange={handlePhoneChange}
-                                    inputProps={{
-                                        required: true,
-                                        name: 'phone'
-                                    }}
-                                    inputStyle={{
-                                        width: '100%',
-                                        height: '36px',
-                                        border: errors.phone ? '1px solid #ef4444' : '1px solid #d1d5db',
-                                        borderRadius: '0.375rem',
-                                        paddingLeft: '50px',
-                                        fontSize: '14px',
-                                        color: 'gray'
-                                    }}
-                                    buttonStyle={{
-                                        border: errors.phone ? '1px solid #ef4444' : '1px solid #d1d5db',
-                                        borderRight: 'none',
-                                        borderRadius: '0.375rem 0 0 0.375rem',
-                                        backgroundColor: '#f3f4f6',
-                                        height: '36px',
-                                        color: 'gray'
-                                    }}
-                                />
-
-                            </div>
-
-                            <div className="relative">
-                                <label className="block mb-1 text-gray-700">Password*</label>
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    name="password"
-                                    placeholder="Create password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    className={`w-full px-2 py-1.5 border ${errors.password ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-blue-500 placeholder-gray-400 text-gray-500 pr-8`}
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    className="absolute right-2 top-8 text-gray-500 hover:text-gray-700"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                >
-                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                                </button>
-                                {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
-                            </div>
-
-                            {userType === 'freelancer' && (
+                            {/* Two Column Form */}
+                            <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5 text-sm">
                                 <div>
-                                    <div className="flex flex-row items-start justify-start gap-2">
-                                        <label className="block mb-1 text-gray-700">Refer Code</label>
-                                        {errors.referCode && <p className="text-red-500 text-xs mt-1">{errors.referCode}</p>}
+                                    <label className="block mb-1 text-gray-700">Full Name*</label>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        placeholder="Your full name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        className={`w-full px-2 py-1.5 border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-blue-500 placeholder-gray-400 text-gray-500`}
+                                        required
+                                    />
+                                    {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                                </div>
+                                <div>
+                                    <div className="flex flex-row items-center">
+                                        <label className="block mb-1 text-gray-700">E-Mail*</label>
+                                        {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
                                     </div>
 
                                     <input
-                                        type="text"
-                                        name="referCode"
-                                        placeholder="Referral code (optional)"
-                                        value={formData.referCode}
+                                        type="email"
+                                        name="email"
+                                        placeholder="Your email"
+                                        value={formData.email}
                                         onChange={handleChange}
-                                        className={`w-full px-2 py-1.5 border ${errors.referCode ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-blue-500 placeholder-gray-400 text-gray-500`}
+                                        className={`w-full px-2 py-1.5 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-blue-500 placeholder-gray-400 text-gray-500`}
+                                        required
                                     />
-
-                                </div>
-                            )}
-
-                            <div className="sm:col-span-2 flex items-start">
-                                <input
-                                    type="checkbox"
-                                    id="terms"
-                                    checked={termsChecked}
-                                    onChange={(e) => setTermsChecked(e.target.checked)}
-                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 mt-0.5 mr-2 rounded"
-                                    required
-                                />
-                                <div className="flex flex-row gap-4">
-                                    <label htmlFor="terms" className="text-gray-700 text-xs">
-                                        I agree to all policies
-                                    </label>
-                                    {!termsChecked && (
-                                        <p className="text-red-500 text-xs">You must agree to the terms</p>
-                                    )}
+                                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                                 </div>
 
-                            </div>
+                                <div className="sm:col-span-2">
+                                    <label className="block mb-1 text-gray-700">Mobile*</label>
+                                    <PhoneInput
+                                        country={'bd'}
+                                        value={phone}
+                                        onChange={handlePhoneChange}
+                                        inputProps={{
+                                            required: true,
+                                            name: 'phone'
+                                        }}
+                                        inputStyle={{
+                                            width: '100%',
+                                            height: '36px',
+                                            border: errors.phone ? '1px solid #ef4444' : '1px solid #d1d5db',
+                                            borderRadius: '0.375rem',
+                                            paddingLeft: '50px',
+                                            fontSize: '14px',
+                                            color: 'gray'
+                                        }}
+                                        buttonStyle={{
+                                            border: errors.phone ? '1px solid #ef4444' : '1px solid #d1d5db',
+                                            borderRight: 'none',
+                                            borderRadius: '0.375rem 0 0 0.375rem',
+                                            backgroundColor: '#f3f4f6',
+                                            height: '36px',
+                                            color: 'gray'
+                                        }}
+                                    />
+                                </div>
 
+                                <div className="relative">
+                                    <label className="block mb-1 text-gray-700">Password*</label>
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        name="password"
+                                        placeholder="Create password"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        className={`w-full px-2 py-1.5 border ${errors.password ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-blue-500 placeholder-gray-400 text-gray-500 pr-8`}
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        className="absolute right-2 top-8 text-gray-500 hover:text-gray-700"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                    </button>
+                                    {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+                                </div>
 
-                            <div className="sm:col-span-2">
-                                <button
-                                    type="submit"
-                                    disabled={isLoading}
-                                    className={`w-full bg-gradient-to-r cursor-pointer from-blue-600 to-indigo-600 text-white py-2 px-4 rounded-md hover:from-blue-700 hover:to-indigo-700 transition duration-200 shadow-sm hover:shadow-md font-semibold flex items-center justify-center ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
-                                >
-                                    {isLoading ? (
-                                        <>
-                                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                            </svg>
-                                            Processing...
-                                        </>
-                                    ) : (
-                                        'Register Now'
-                                    )}
-                                </button>
-                            </div>
-                        </form>
+                                {userType === 'freelancer' && (
+                                    <div>
+                                        <div className="flex flex-row items-start justify-start gap-2">
+                                            <label className="block mb-1 text-gray-700">Refer Code</label>
+                                            {errors.referCode && <p className="text-red-500 text-xs mt-1">{errors.referCode}</p>}
+                                        </div>
 
-                        <Link to={"/sign-in"}>
-                            <p className="mt-4 text-center text-gray-500 text-md">
-                                Have an account? <a href="#" className="font-medium text-blue-600 hover:underline">Login</a>
-                            </p>
-                        </Link>
+                                        <input
+                                            type="text"
+                                            name="referCode"
+                                            placeholder="Referral code (optional)"
+                                            value={formData.referCode}
+                                            onChange={handleChange}
+                                            className={`w-full px-2 py-1.5 border ${errors.referCode ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-blue-500 placeholder-gray-400 text-gray-500`}
+                                        />
+                                    </div>
+                                )}
 
+                                <div className="sm:col-span-2 flex items-start">
+                                    <input
+                                        type="checkbox"
+                                        id="terms"
+                                        checked={termsChecked}
+                                        onChange={(e) => setTermsChecked(e.target.checked)}
+                                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 mt-0.5 mr-2 rounded"
+                                        required
+                                    />
+                                    <div className="flex flex-row gap-4">
+                                        <label htmlFor="terms" className="text-gray-700 text-xs">
+                                            I agree to all policies
+                                        </label>
+                                        {!termsChecked && (
+                                            <p className="text-red-500 text-xs">You must agree to the terms</p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="sm:col-span-2">
+                                    <button
+                                        type="submit"
+                                        disabled={isLoading}
+                                        className={`w-full bg-gradient-to-r cursor-pointer from-blue-600 to-indigo-600 text-white py-2 px-4 rounded-md hover:from-blue-700 hover:to-indigo-700 transition duration-200 shadow-sm hover:shadow-md font-semibold flex items-center justify-center ${isLoading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                                    >
+                                        {isLoading ? (
+                                            <>
+                                                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                                Processing...
+                                            </>
+                                        ) : (
+                                            'Register Now'
+                                        )}
+                                    </button>
+                                </div>
+                            </form>
+
+                            <Link to={"/sign-in"}>
+                                <p className="mt-4 text-center text-gray-500 text-md">
+                                    Have an account? <a href="#" className="font-medium text-blue-600 hover:underline">Login</a>
+                                </p>
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>

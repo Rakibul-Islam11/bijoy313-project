@@ -1,19 +1,22 @@
 import { Link } from "react-router-dom";
 import navbrandLogo from '../../assets/navbrand-logo/Untitled design (1).png';
-import { useState, useRef, useEffect, useContext } from "react";
+import { useState, useRef, useEffect, useContext, use } from "react";
 import { FiChevronDown, FiSearch, FiX, FiMenu } from "react-icons/fi";
 import './navbar.css';
 import { authContext } from "../auth-porvider-context/AuthContext";
 import Swal from 'sweetalert2';
+
 
 const Navbar = () => {
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const dropdownRef = useRef(null);
     const buttonRef = useRef(null);
+    const [isOpen, setIsOpen] = useState(false);
 
     const { user, logOut } = useContext(authContext);
-
+    console.log(user);
+    
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
         if (isMobileMenuOpen) {
@@ -78,6 +81,19 @@ const Navbar = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     return (
         <div className="bg-[#ff0768] text-white shadow-md py-1 px-4 md:px-6 for_nav_font text-[17px]">
@@ -86,7 +102,7 @@ const Navbar = () => {
                 {/* Left Side: Logo with circular white background */}
                 <div className="flex items-center space-x-6">
                     <Link to="/home" className="relative">
-                        <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center p-2">
+                        <div className=" w-10 h-10 md:w-16 md:h-16 rounded-full bg-white flex items-center justify-center p-0.5 md:p-2">
                             <img
                                 src={navbrandLogo}
                                 alt="Logo"
@@ -98,26 +114,26 @@ const Navbar = () => {
 
                 {/* Center Text - Only visible on mobile */}
                 <div className="md:hidden flex-1 text-center font-bold text-2xl">
-                    <span className="text-blue-500 font-bold">bijoy</span>
-                    <span className="text-red-500 font-bold">313</span>
+                    <span className="text-white font-bold">bijoy</span>
+                    <span className="text-gray-500 font-bold">313</span>
                 </div>
 
                 {/* Mobile Menu Button (Hamburger) - Only visible on small screens */}
                 <div className="md:hidden">
                     <button
                         onClick={toggleMobileMenu}
-                        className="text-[#f67c01] hover:text-blue-600 focus:outline-none"
+                        className="text-white hover:text-blue-600 focus:outline-none"
                     >
                         {isMobileMenuOpen ? (
-                            <FiX size={40} />
+                            <FiX size={35} />
                         ) : (
-                            <FiMenu size={40} />
+                            <FiMenu size={35} />
                         )}
                     </button>
                 </div>
 
                 {/* Right Side: Navigation + Search - Hidden on mobile unless menu is open */}
-                <div className={`${isMobileMenuOpen ? 'block' : 'hidden'} md:flex items-center md:space-x-6 absolute md:relative top-20 md:top-0 left-0 w-full md:w-auto bg-[#f7f3ea] md:bg-transparent shadow-md md:shadow-none z-50 p-4 md:p-0`}>
+                <div className={`${isMobileMenuOpen ? 'block' : 'hidden'} md:flex items-center md:space-x-6 absolute md:relative top-13 md:top-0 left-0 w-full md:w-auto bg-[#2c2921] md:bg-transparent shadow-md md:shadow-none z-50 p-4 md:p-0`}>
                     {/* Navigation Items */}
                     <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 w-full">
                         <Link
@@ -260,7 +276,7 @@ const Navbar = () => {
                                 </ul>
                             )}
                         </div>
-
+                        
                         <Link
                             to="/support"
                             className="hover:text-black text-white font-bold py-2 md:py-5"
@@ -268,6 +284,12 @@ const Navbar = () => {
                         >
                             Support
                         </Link>
+                        {user && (
+                            <Link to="" className="hover:text-black text-yellow-400 font-bold py-2 md:py-5 transition-colors duration-300">
+                                Dashboard
+                            </Link>
+                        )}
+
                     </div>
 
                     {/* Search Box - Hidden on mobile */}
@@ -275,7 +297,7 @@ const Navbar = () => {
                         <input
                             type="text"
                             placeholder="Search..."
-                            className="pl-10 pr-3 py-1.5 border-2 border-white rounded-sm focus:outline-none focus:ring-2 hover:text-black text-sm"
+                            className="pl-10 pr-3 py-1.5 border-2 text-white border-white rounded-sm focus:outline-none focus:ring-2 hover:text-black text-sm placeholder-amber-50"
                         />
                         <FiSearch className="absolute left-3 top-2.5 text-white font-bold" size={16} />
                     </div>
@@ -283,15 +305,66 @@ const Navbar = () => {
                     {/* Conditional Join/Logout Button */}
                     <div className="mt-4 md:mt-0">
                         {user ? (
-                            <button
-                                onClick={handleLogout}
-                                className="relative px-3 py-1.5 border-2 border-white text-white font-bold overflow-hidden group transition-all duration-300 animate-border-pulse block text-center"
-                            >
-                                <span className="relative z-10 group-hover:text-white transition-colors duration-300 text-white font-bold">
-                                    Logout
-                                </span>
-                                <span className="absolute inset-0 bg-black scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 z-0 "></span>
-                            </button>
+                            <div className="relative" ref={dropdownRef}>
+                                <button
+                                    className="flex items-center space-x-2 focus:outline-none"
+                                    onMouseEnter={() => setIsOpen(true)}
+                                    onMouseLeave={() => setIsOpen(false)}
+                                >
+                                    <div className="w-9 h-9 rounded-full border-2 border-white overflow-hidden">
+                                        <img
+                                            src={user.photoURL}
+                                            alt="Admin"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                    <span className="text-white py-6 font-bold hidden md:block">Profile</span>
+                                    <FiChevronDown className="text-white" />
+                                </button>
+
+                                {isOpen && (
+                                    <div
+                                        className="absolute right-0 mt-[-5px] w-48 bg-white rounded-md shadow-lg z-50"
+                                        onMouseEnter={() => setIsOpen(true)}
+                                        onMouseLeave={() => setIsOpen(false)}
+                                    >
+                                        <ul className="py-2 text-gray-800 text-sm">
+                                            <li>
+                                                <Link
+                                                    to="/dashboard"
+                                                    className="block px-4 py-2 hover:bg-gray-100"
+                                                >
+                                                    Dashboard
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link
+                                                    to="/profile"
+                                                    className="block px-4 py-2 hover:bg-gray-100"
+                                                >
+                                                    My Profile
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link
+                                                    to="/settings"
+                                                    className="block px-4 py-2 hover:bg-gray-100"
+                                                >
+                                                    Settings
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <button
+                                                    onClick={handleLogout}
+                                                    className="w-full text-left px-4 py-2 hover:bg-red-100 text-red-600"
+                                                >
+                                                    Logout
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
                         ) : (
                             <Link
                                 to="/sign-in"
