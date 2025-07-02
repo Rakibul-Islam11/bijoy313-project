@@ -1,14 +1,16 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import './index.css';
+import App from './App.jsx';
 
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Home from './all-components/home-page/Home.jsx'
-import SignInUp from './all-components/popup-sign&up/SignInUp.jsx'
-import SignIn from './all-components/popup-sign&up/SignIn.jsx'
-import AuthContextProvider from './all-components/auth-porvider-context/AuthContext.jsx'
-import PasswordReset from './all-components/forgot-pass-page/PasswordReset.jsx'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Home from './all-components/home-page/Home.jsx';
+import SignInUp from './all-components/popup-sign&up/SignInUp.jsx';
+import SignIn from './all-components/popup-sign&up/SignIn.jsx';
+import AuthContextProvider from './all-components/auth-porvider-context/AuthContext.jsx';
+import PasswordReset from './all-components/forgot-pass-page/PasswordReset.jsx';
+import MobileMenuProvider from './all-contexts/MobileMenuContext.jsx';
+
 
 const routes = createBrowserRouter([
   {
@@ -16,34 +18,35 @@ const routes = createBrowserRouter([
     element: <App />,
     children: [
       {
-        index: true,  
+        index: true,
         element: <Home />
       },
       {
-        path: '/home', 
+        path: '/home',
         element: <Home />
       },
       {
         path: "/pop-up-sign",
-        element: <SignInUp></SignInUp>
+        element: <SignInUp />
       },
       {
         path: "/sign-in",
-        element: <SignIn></SignIn>
+        element: <SignIn />
       },
       {
         path: "/password-reset",
-        element: <PasswordReset></PasswordReset>
+        element: <PasswordReset />
       }
-      
-
     ]
   }
 ]);
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AuthContextProvider>
-      <RouterProvider router={routes}></RouterProvider>
-    </AuthContextProvider>
-  </StrictMode>,
-)
+    <MobileMenuProvider> 
+      <AuthContextProvider>
+        <RouterProvider router={routes} />
+      </AuthContextProvider>
+    </MobileMenuProvider>
+  </StrictMode>
+);

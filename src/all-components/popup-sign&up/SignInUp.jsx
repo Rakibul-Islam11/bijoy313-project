@@ -4,7 +4,7 @@ import popupimg from '../../assets/popuplogin-img/White and Blue Creative 3D Wor
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import './signinup.css'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 import { auth, authContext } from "../auth-porvider-context/AuthContext";
 import Swal from 'sweetalert2';
@@ -40,7 +40,7 @@ const SignInUp = () => {
     const [otpError, setOtpError] = useState('');
     const [generatedOtp, setGeneratedOtp] = useState('');
     const { createUser, updateUserProfile, sendVerificationEmail } = useContext(authContext);
-
+    const navigate = useNavigate();
     // Check email verification status periodically
     useEffect(() => {
         if (!showVerificationPopup || verificationMethod !== 'email') return;
@@ -63,7 +63,10 @@ const SignInUp = () => {
                                 text: 'Your email has been verified successfully.',
                                 timer: 2000,
                                 showConfirmButton: false
+                            }).then(() => {
+                                navigate('/home'); // ✅ Redirect to home
                             });
+
                             setShowVerificationPopup(false);
                         }).catch(error => {
                             console.error('Error updating verification status:', error);
@@ -247,6 +250,8 @@ const SignInUp = () => {
                     text: 'Your phone number has been verified successfully.',
                     timer: 2000,
                     showConfirmButton: false
+                }).then(() => {
+                    navigate('/home'); // OTP verify成功后 রিডাইরেক্ট
                 });
             } else {
                 setOtpError('Wrong OTP. Please try again.');
@@ -509,12 +514,13 @@ const SignInUp = () => {
                                 className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition duration-200 font-medium shadow-md flex items-center justify-center gap-2"
                             >
                                 {verificationMethod === 'email' ? (
-                                    <>
+                                    <div className="flex items-center gap-2 cursor-pointer">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                         </svg>
                                         Send Verification Email
-                                    </>
+                                    </div>
+
                                 ) : (
                                     <>
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -590,7 +596,7 @@ const SignInUp = () => {
 
                         <button
                             onClick={() => setShowVerificationPopup(false)}
-                            className="w-full mt-4 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg transition duration-200 font-medium"
+                            className="w-full mt-4 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg transition duration-200 font-medium cursor-pointer"
                         >
                             Close
                         </button>
