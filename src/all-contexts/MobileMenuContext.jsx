@@ -4,6 +4,9 @@ export const MobileMenuContext = createContext();
 
 const MobileMenuProvider = ({ children }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [popupOpen, setPopupOpen] = useState(false);
+
+  
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(prev => !prev);
     };
@@ -11,7 +14,9 @@ const MobileMenuProvider = ({ children }) => {
     const serveData = {
         isMobileMenuOpen,
         setIsMobileMenuOpen,
-        toggleMobileMenu
+        toggleMobileMenu,
+        setPopupOpen,
+        popupOpen
     };
     return (
         <MobileMenuContext.Provider value={serveData}>

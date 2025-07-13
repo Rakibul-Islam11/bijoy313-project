@@ -1,0 +1,30 @@
+/* আপনার CSS ফাইলে এই কোড যোগ করুন */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* আপনি চাইলে কাস্টম স্পিন স্লো ক্লাসও যোগ করতে পারেন */
+.animate-spin-slow {
+    animation: spin 3s linear infinite;
+}
+/* আপনার CSS ফাইলে এই কোড যোগ করুন */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+

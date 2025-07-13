@@ -1,0 +1,4 @@
+/* এইটা আপনার global CSS ফাইলে রাখুন */
+.neon-glow {
+    box-shadow: 0 0 15px rgba(236, 72, 153, 0.7), 0 0 30px rgba(139, 92, 246, 0.6);
+}

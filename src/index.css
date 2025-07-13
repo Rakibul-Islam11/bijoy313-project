@@ -1,0 +1,7 @@
+/* index.css বা App.css */
+body {
+    overflow-x: hidden;
+}
+html {
+    scroll-behavior: smooth;
+}

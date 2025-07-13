@@ -1,0 +1,126 @@
+/* PopularCate.css */
+
+/* Base 3D transform properties */
+.perspective-1000 {
+    perspective: 1000px;
+    /* Defines the 3D space for children */
+}
+
+.transform-style-preserve-3d {
+    transform-style: preserve-3d;
+    /* Ensures children maintain their 3D position */
+}
+
+.backface-hidden {
+    backface-visibility: hidden;
+    /* Hides the back of the element when rotated */
+}
+
+/* Category Card Base Styles */
+.category-card {
+    width: 100px;
+    /* Adjust as needed */
+    height: 120px;
+    /* Adjust as needed */
+    position: relative;
+    /* Needed for absolute positioning of inner elements */
+    transition: transform 0.6s ease-out;
+    /* Smooth transition for card itself */
+    transform-origin: center center;
+    /* Optional: Small initial lift for a floating feel */
+    transform: translateY(-2px);
+}
+
+/* Inner card for flip effect */
+.category-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s ease-out;
+    /* Smooth transition for the flip */
+    transform-style: preserve-3d;
+}
+
+/* Front and Back of the card */
+.category-card-front,
+.category-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    /* Safari */
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    /* Adjust padding for content */
+}
+
+/* Initial state of the back face */
+.category-card-back {
+    transform: rotateY(180deg);
+    /* Hide backface initially */
+}
+
+/* Hover Effect: Flip the card */
+.category-card:hover .category-card-inner {
+    transform: rotateY(180deg);
+    /* Flips the card on hover */
+}
+
+/* Optional: Additional subtle hover effects */
+.category-card:hover {
+    transform: scale(1.05) translateY(-5px);
+    /* Slightly enlarge and lift on hover */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    /* More pronounced shadow */
+    z-index: 10;
+    /* Bring hovered card to front */
+}
+
+/* Ensure text on back is readable */
+.category-card-back span {
+    word-break: break-word;
+    /* Prevents long words from overflowing */
+    line-height: 1.2;
+}
+
+/* Responsive adjustments for card size */
+@media (min-width: 640px) {
+
+    /* sm */
+    .category-card {
+        width: 110px;
+        height: 130px;
+    }
+}
+
+@media (min-width: 768px) {
+
+    /* md */
+    .category-card {
+        width: 120px;
+        height: 140px;
+    }
+}
+
+@media (min-width: 1024px) {
+
+    /* lg */
+    .category-card {
+        width: 130px;
+        height: 150px;
+    }
+}
+
+@media (min-width: 1280px) {
+
+    /* xl */
+    .category-card {
+        width: 140px;
+        height: 160px;
+    }
+}

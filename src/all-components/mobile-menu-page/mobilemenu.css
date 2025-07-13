@@ -1,0 +1,19 @@
+@keyframes marquee {
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+.marquee {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 6s linear infinite;
+}
+
+button:hover .marquee {
+    animation-play-state: paused;
+}
