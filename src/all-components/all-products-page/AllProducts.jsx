@@ -79,14 +79,14 @@ const AllProducts = () => {
                                 </div>
                             </Link>
 
-                            <div className="p-4 flex flex-col justify-between flex-1">
-                                <h2 className="text-gray-800 font-semibold text-[16px] md:text-lg mb-0 line-clamp-2 md:pb-3">
+                            <div className="p-4 mt-auto flex flex-col justify-between flex-1">
+                                <h2 className="text-gray-800 mt-auto font-semibold text-[16px] md:text-lg mb-0 line-clamp-2 md:pb-3">
                                     {product.productName}
                                 </h2>
 
                                 {/* Pricing Logic */}
                                 {product.variantType === "weight" && product.variants?.length > 0 && (
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex  items-center gap-2">
                                         {product.variants[0].regularPrice && (
                                             <del className="text-gray-500 text-sm">৳{product.variants[0].regularPrice}</del>
                                         )}
@@ -107,7 +107,7 @@ const AllProducts = () => {
                                     Array.isArray(product.downloadFiles) &&
                                     product.downloadFiles.length > 0 &&
                                     product.downloadFiles.map((item, index) => (
-                                        <div key={index} className="flex items-center gap-2">
+                                        <div key={index} className="flex  items-center gap-2">
                                             <p className="text-red-600 font-bold text-lg">৳{item.resellerPrice}</p>
                                         </div>
                                     ))}

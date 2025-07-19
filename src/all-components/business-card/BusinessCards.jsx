@@ -17,13 +17,13 @@ const services = [
     {
         title: 'মাইক্রোজবস',
         icon: <FiBriefcase />,
-        url: '#microjobs',
+        url: '/micro-job',
         color: 'from-teal-400 to-teal-600'
     },
     {
         title: 'অ্যাকটিভ জব',
         icon: <FiDollarSign />,
-        url: '#halal-income',
+        url: '/active-jobs',
         color: 'from-emerald-400 to-emerald-600'
     },
     {

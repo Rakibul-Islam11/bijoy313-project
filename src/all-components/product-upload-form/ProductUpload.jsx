@@ -49,8 +49,7 @@ const ProductUpload = () => {
             stock: "",
             sku: "",
             barcode: "",
-            weight: "",
-            deliveryCharge: ""
+            weight: ""
         }
     ]);
 
@@ -64,7 +63,7 @@ const ProductUpload = () => {
     const [simpleSku, setSimpleSku] = useState("");
     const [simpleBarcode, setSimpleBarcode] = useState("");
     const [simpleWeight, setSimpleWeight] = useState("");
-    const [simpleDeliveryCharge, setSimpleDeliveryCharge] = useState("");
+    const [deliveryCharge, setDeliveryCharge] = useState("");
 
     // Media management
     const [images, setImages] = useState([""]);
@@ -213,8 +212,7 @@ const ProductUpload = () => {
             stock: "",
             sku: "",
             barcode: "",
-            weight: "",
-            deliveryCharge: ""
+            weight: ""
         }]);
     };
 
@@ -372,8 +370,7 @@ const ProductUpload = () => {
                     stock: "",
                     sku: "",
                     barcode: "",
-                    weight: "",
-                    deliveryCharge: ""
+                    weight: ""
                 }
             ]);
         }
@@ -392,6 +389,7 @@ const ProductUpload = () => {
                     required: advancePayment,
                     amount: advancePayment ? advanceAmount : null
                 },
+                deliveryCharge: !isDigital ? deliveryCharge : null,
                 mainCategory,
                 subCategory,
                 tags: tags.split(',').map(tag => tag.trim()),
@@ -411,8 +409,7 @@ const ProductUpload = () => {
                     stock: simpleStock,
                     sku: simpleSku,
                     barcode: simpleBarcode,
-                    weight: simpleWeight,
-                    deliveryCharge: simpleDeliveryCharge
+                    weight: simpleWeight
                 } : null,
                 media: {
                     mainImage,
@@ -542,7 +539,7 @@ const ProductUpload = () => {
 
                 {/* ADVANCE PAYMENT SECTION */}
                 <div className="border-b pb-6">
-                    <h3 className="text-xl font-semibold mb-4">Advance Payment</h3>
+                    <h3 className="text-xl font-semibold mb-4">Advance Payment & Delivery</h3>
 
                     <div className="flex items-center space-x-2 mb-2">
                         <input
@@ -570,6 +567,19 @@ const ProductUpload = () => {
                                     required={advancePayment}
                                 />
                             </div>
+                        </div>
+                    )}
+
+                    {!isDigital && (
+                        <div className="mt-4">
+                            <label className="block font-semibold mb-1">Delivery Charge</label>
+                            <input
+                                type="number"
+                                className="w-full border p-2 rounded"
+                                value={deliveryCharge}
+                                onChange={(e) => setDeliveryCharge(e.target.value)}
+                                placeholder="e.g. 50"
+                            />
                         </div>
                     )}
                 </div>
@@ -1123,7 +1133,7 @@ const ProductUpload = () => {
                             <h4 className="font-semibold text-lg mt-6 mb-3">⚖️ Weight Variants (Different Weights)</h4>
 
                             {weightVariants.map((variant, index) => (
-                                <div key={index} className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-4 bg-gray-50 p-4 rounded border">
+                                <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4 bg-gray-50 p-4 rounded border">
                                     <div>
                                         <label className="block text-sm font-medium mb-1">Weight*</label>
                                         <div className="flex">
@@ -1168,24 +1178,14 @@ const ProductUpload = () => {
                                             readOnly={!!variant.discountPercent}
                                         />
                                     </div>
-                                    <div>
-                                        <label className="block text-sm font-medium mb-1">Discount %</label>
-                                        <input
-                                            type="number"
-                                            className="w-full border p-2 rounded"
-                                            value={variant.discountPercent}
-                                            onChange={(e) => handleWeightVariantChange(index, "discountPercent", e.target.value)}
-                                        />
-                                    </div>
                                     <div className="flex items-end gap-2">
-                                        <div className="flex-1">
-                                            <label className="block text-sm font-medium mb-1">Delivery Charge</label>
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1">Discount %</label>
                                             <input
                                                 type="number"
-                                                placeholder="e.g. 50"
                                                 className="w-full border p-2 rounded"
-                                                value={variant.deliveryCharge}
-                                                onChange={(e) => handleWeightVariantChange(index, "deliveryCharge", e.target.value)}
+                                                value={variant.discountPercent}
+                                                onChange={(e) => handleWeightVariantChange(index, "discountPercent", e.target.value)}
                                             />
                                         </div>
                                         {weightVariants.length > 1 && (
@@ -1266,16 +1266,6 @@ const ProductUpload = () => {
                                         <option value="oz">oz</option>
                                     </select>
                                 </div>
-                            </div>
-                            <div className="md:col-span-2">
-                                <label className="block font-semibold mb-1">Delivery Charge</label>
-                                <input
-                                    type="number"
-                                    className="w-full border p-2 rounded"
-                                    value={simpleDeliveryCharge}
-                                    onChange={(e) => setSimpleDeliveryCharge(e.target.value)}
-                                    placeholder="e.g. 50"
-                                />
                             </div>
                         </div>
                     )}

@@ -1,0 +1,29 @@
+@keyframes gradient-border {
+    0% {
+        border-color: #f59e0b;
+        /* amber-500 */
+    }
+
+    25% {
+        border-color: #10b981;
+        /* green-500 */
+    }
+
+    50% {
+        border-color: #3b82f6;
+        /* blue-500 */
+    }
+
+    75% {
+        border-color: #c40202;
+        /* violet-500 */
+    }
+
+    100% {
+        border-color: #d60084;
+    }
+}
+
+.animate-border {
+    animation: gradient-border 3s linear infinite;
+}

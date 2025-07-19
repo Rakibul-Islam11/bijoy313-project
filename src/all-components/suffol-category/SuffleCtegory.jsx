@@ -19,11 +19,12 @@ import { TbDeviceMobileMessage } from "react-icons/tb";
 import { HiOutlineNewspaper } from "react-icons/hi";
 import { BiSolidCategory } from "react-icons/bi";
 import './suffole.css';
+import { Link } from "react-router-dom";
 
 const categories = [
     { label: "মোবাইল রিচার্জ", icon: <MdPhoneIphone className="text-2xl sm:text-3xl" />, color: "from-orange-400 to-yellow-400", animation: "pulse" },
     { label: "ডায়গ প্যাক", icon: <FaBoxOpen className="text-2xl sm:text-3xl" />, color: "from-blue-500 to-indigo-500", animation: "bounce" },
-    { label: "অনলাইন শপ", icon: <FaShoppingCart className="text-2xl sm:text-3xl" />, color: "from-pink-500 to-pink-400", animation: "float" },
+    { label: "অনলাইন শপ", icon: <FaShoppingCart className="text-2xl sm:text-3xl" />, color: "from-pink-500 to-pink-400", url: '/online-shop', animation: "float" },
     { label: "বিলপেমেন্ট শপ", icon: <FaNewspaper className="text-2xl sm:text-3xl" />, color: "from-rose-400 to-pink-500", animation: "shake" },
     { label: "প্রোডাক্ট ডেলিভারি", icon: <TbDeviceMobileMessage className="text-2xl sm:text-3xl" />, color: "from-orange-400 to-pink-400", animation: "spin" },
 
@@ -52,8 +53,7 @@ const SuffleCategory = () => {
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-lg  md:px-0 sm:mx-0">
                 <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 gap-4 sm:gap-6 md:gap-8">
                     {categories.map((cat, index) => (
-                        <div
-                            key={index}
+                        <Link to={cat.url}                            key={index}
                             className="flex flex-col items-center text-center group cursor-pointer"
                         >
                             <div className={`relative w-14 h-14 sm:w-18 sm:h-18 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full bg-gradient-to-br ${cat.color} 
@@ -68,7 +68,7 @@ const SuffleCategory = () => {
                                 transition-colors duration-300 leading-tight px-0 sm:px-1 w-full">
                                 {cat.label}
                             </p>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </div>

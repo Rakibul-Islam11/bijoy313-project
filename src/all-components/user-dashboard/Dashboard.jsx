@@ -26,28 +26,7 @@ const Dashboard = () => {
     return (
         <div>
             {/* Toggle Buttons */}
-            {/* <div className="flex justify-center gap-4 my-4">
-                <button
-                    onClick={() => setRole("freelancer")}
-                    className={`px-4 py-2 rounded-md font-semibold transition ${role === "freelancer"
-                            ? "bg-[#c5064f] text-white"
-                            : "bg-gray-200 text-gray-800"
-                        }`}
-                >
-                    Freelancer Dashboard
-                </button>
-
-                <button
-                    onClick={() => setRole("client")}
-                    className={`px-4 py-2 rounded-md font-semibold transition ${role === "client"
-                            ? "bg-[#c5064f] text-white"
-                            : "bg-gray-200 text-gray-800"
-                        }`}
-                >
-                    Client Dashboard
-                </button>
-            </div> */}
-
+      
             {/* Conditional Rendering */}
             {role === "freelancer" ? (
                 <FreelancerDashboard userData={freelancerData} />

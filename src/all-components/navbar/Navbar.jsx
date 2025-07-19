@@ -5,9 +5,10 @@ import { FiChevronDown, FiSearch, FiX, FiMenu, FiShoppingCart } from "react-icon
 import { FaShoppingCart } from "react-icons/fa";
 import { authContext } from "../auth-porvider-context/AuthContext";
 import Swal from 'sweetalert2';
-import { MobileMenuContext } from "../../all-contexts/MobileMenuContext";
+import { MobileMenuContext } from "../all-contexts/MobileMenuContext";
 import NotificationBell from "./NotificationBell";
 import axios from "axios";
+import CartSidebar from "../cart-compo/CartSidebar";
 
 
 const Navbar = () => {
@@ -24,6 +25,7 @@ const Navbar = () => {
     const [userProfile, setUserProfile] = useState(null);
     const [cartItems, setCartItems] = useState([]);
     const [loadingSid, setLoadingSide] = useState(true);
+    const [isCartOpen, setIsCartOpen] = useState(false);
     useEffect(() => {
         if (!user?.uid) return;
 
@@ -130,11 +132,11 @@ const Navbar = () => {
 
 
 
-    
+
 
 
     return (
-        <nav className="bg-[#ff0768] text-white shadow-lg sticky top-0 z-50">
+        <nav className="bg-[#ff0768] text-white shadow-lg fixed top-0 left-0 right-0 z-50 w-full">
             <div className="px-2 xl:px-6">
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
@@ -449,16 +451,17 @@ const Navbar = () => {
                         )}
 
                         <div className='hidden lg:block'>
-                            <Link to="/cart" className="relative">
-                                <button className="p-2 rounded-full bg-black/30 backdrop-blur-md border border-pink-400/30 shadow-[0_0_15px_rgba(255,0,120,0.2)] hover:shadow-[0_0_20px_rgba(255,0,120,0.3)] transition-all duration-300">
-                                    <FiShoppingCart className="w-5 h-5 text-pink-300" />
-                                    {itemCount > 0 && (
-                                        <span className="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full transform translate-x-1/2 -translate-y-1/2">
-                                            {itemCount}
-                                        </span>
-                                    )}
-                                </button>
-                            </Link>
+                            <button
+                                onClick={() => setIsCartOpen(true)}
+                                className="p-2 rounded-full bg-black/30 backdrop-blur-md border border-pink-400/30 shadow-[0_0_15px_rgba(255,0,120,0.2)] hover:shadow-[0_0_20px_rgba(255,0,120,0.3)] transition-all duration-300 relative"
+                            >
+                                <FiShoppingCart className="w-5 h-5 text-white" />
+                                {itemCount > 0 && (
+                                    <span className="absolute -top-0 -right-0 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full transform translate-x-1/2 -translate-y-1/2">
+                                        {itemCount}
+                                    </span>
+                                )}
+                            </button>
                         </div>
 
                         <div className='hidden lg:block'>
@@ -538,6 +541,15 @@ const Navbar = () => {
                                                     My Profile
                                                 </Link>
                                                 <Link
+                                                    to="/favourites"
+                                                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50 hover:text-[#ff0768] transition-all duration-200"
+                                                >
+                                                    <svg className="w-4 h-4 mr-2 text-[#ff0768]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                                    </svg>
+                                                    Favourite
+                                                </Link>
+                                                <Link
                                                     to="/settings"
                                                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50 hover:text-[#ff0768] transition-all duration-200"
                                                 >
@@ -548,7 +560,7 @@ const Navbar = () => {
                                                     Settings
                                                 </Link>
                                             </div>
-                                            <div className="py-1 border-t">
+                                            <div className="py-1 border-red-400 border-t-2">
                                                 <button
                                                     onClick={handleLogout}
                                                     className="flex items-center w-full px-4 py-2 text-sm text-[#ff0768] hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50 transition-all duration-200"
@@ -685,10 +697,19 @@ const Navbar = () => {
 
 
 
+                    {/* কার্ট আইকন - মোবাইল */}
                     <div className="block lg:hidden">
-                        <Link to={'/'}>
-                            <FaShoppingCart />
-                        </Link>
+                        <button
+                            onClick={() => setIsCartOpen(true)}
+                            className="p-2 rounded-full bg-black/30 backdrop-blur-md border border-pink-400/30 shadow-[0_0_15px_rgba(255,0,120,0.2)] hover:shadow-[0_0_20px_rgba(255,0,120,0.3)] transition-all duration-300 relative"
+                        >
+                            <FiShoppingCart className="w-5 h-5 text-white" />
+                            {itemCount > 0 && (
+                                <span className="absolute -top-0 -right-0 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full transform translate-x-1/2 -translate-y-1/2">
+                                    {itemCount}
+                                </span>
+                            )}
+                        </button>
                     </div>
 
                     <div className="block lg:hidden">
@@ -708,69 +729,14 @@ const Navbar = () => {
                             )}
                         </button>
                     </div>
+                    <CartSidebar
+                        isOpen={isCartOpen}
+                        onClose={() => setIsCartOpen(false)}
+                    />
                 </div>
             </div>
 
-            {/* Mobile Menu */}
-            {isMobileMenuOpen && (
-                <div className="lg:hidden bg-[#e6065d] px-4 pb-4 animate-slideDown">
-                    <div className="pt-2 pb-3 space-y-2">
-                        <Link
-                            to="/home"
-                            className="block px-3 py-3 rounded-lg text-base font-medium hover:bg-[#d80757] transition-all duration-200"
-                        >
-                            Home
-                        </Link>
-                        <Link
-                            to="/about"
-                            className="block px-3 py-3 rounded-lg text-base font-medium hover:bg-[#d80757] transition-all duration-200"
-                        >
-                            About Us
-                        </Link>
-                        <Link
-                            to="/support"
-                            className="block px-3 py-3 rounded-lg text-base font-medium hover:bg-[#d80757] transition-all duration-200"
-                        >
-                            Support
-                        </Link>
-                        {user && (
-                            <Link
-                                to="/dashboard"
-                                className="block px-3 py-3 rounded-lg text-base font-medium bg-gradient-to-r from-yellow-400 to-yellow-300 text-gray-900 hover:from-yellow-300 hover:to-yellow-200 transition-all duration-200"
-                            >
-                                Dashboard
-                            </Link>
-                        )}
-                    </div>
-                    <div className="pt-4 pb-2 border-t border-[#d80757]">
-                        {user ? (
-                            <div className="flex items-center px-4 py-3">
-                                <img
-                                    src={user.photoURL}
-                                    alt="Profile"
-                                    className="h-10 w-10 rounded-full border-2 border-white"
-                                />
-                                <div className="ml-3">
-                                    <p className="text-sm font-medium text-white">{user.displayName}</p>
-                                    <button
-                                        onClick={handleLogout}
-                                        className="text-sm font-medium text-pink-200 hover:text-white transition-colors"
-                                    >
-                                        Sign Out
-                                    </button>
-                                </div>
-                            </div>
-                        ) : (
-                            <Link
-                                to="/pop-up-sign"
-                                className="block w-full px-4 py-3 text-center text-[#ff0768] bg-white rounded-full font-medium hover:bg-gray-100 transition-all duration-200"
-                            >
-                                Join Now
-                            </Link>
-                        )}
-                    </div>
-                </div>
-            )}
+
         </nav>
     );
 };

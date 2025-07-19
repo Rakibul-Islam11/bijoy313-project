@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -37,6 +37,7 @@ const ProductDetails = () => {
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
     const [activeImage, setActiveImage] = useState(0);
     const [selectedColor, setSelectedColor] = useState(null);
+    const [selectedSize, setSelectedSize] = useState(null);
     const [selectedWeight, setSelectedWeight] = useState(null);
     const [isFavorite, setIsFavorite] = useState(false);
     const [quantity, setQuantity] = useState(1);
@@ -51,11 +52,10 @@ const ProductDetails = () => {
     const [averageRating, setAverageRating] = useState(0);
     const [totalReviews, setTotalReviews] = useState(0);
     const [showShareOptions, setShowShareOptions] = useState(false);
-
+    const navigate = useNavigate();
     const shareUrl = window.location.href;
     const title = product?.productName || 'Check out this product';
-    console.log(product);
-    
+
     useEffect(() => {
         const fetchReviews = async () => {
             if (!productId) return;
@@ -99,6 +99,9 @@ const ProductDetails = () => {
 
                     if (res.data.product.variantType === "fashion" && res.data.product.variants?.colors?.length > 0) {
                         setSelectedColor(res.data.product.variants.colors[0]);
+                        if (res.data.product.variants.colors[0].sizes?.length > 0) {
+                            setSelectedSize(res.data.product.variants.colors[0].sizes[0]);
+                        }
                     }
                     if (res.data.product.variantType === "weight" && res.data.product.variants?.length > 0) {
                         setSelectedWeight(res.data.product.variants[0]);
@@ -144,9 +147,9 @@ const ProductDetails = () => {
                 let variantType = null;
                 let variantValue = null;
 
-                if (product.variantType === "fashion" && selectedColor) {
-                    variantType = 'color';
-                    variantValue = selectedColor.name;
+                if (product.variantType === "fashion" && selectedColor && selectedSize) {
+                    variantType = 'color-size';
+                    variantValue = `${selectedColor.name}-${selectedSize.size}`;
                 } else if (product.variantType === "weight" && selectedWeight) {
                     variantType = 'weight';
                     variantValue = selectedWeight.value;
@@ -172,7 +175,7 @@ const ProductDetails = () => {
         };
 
         checkCartStatus();
-    }, [product, user, selectedColor, selectedWeight]);
+    }, [product, user, selectedColor, selectedSize, selectedWeight]);
 
     useEffect(() => {
         const checkFavoriteStatus = async () => {
@@ -217,34 +220,9 @@ const ProductDetails = () => {
         }
     };
 
-    const calculateDiscount = () => {
-        if (!product) return 0;
-
-        try {
-            if (product.variantType === "fashion" && product.variants) {
-                const { regularPrice, price } = product.variants;
-                if (regularPrice > price) {
-                    return Math.round(((regularPrice - price) / regularPrice) * 100);
-                }
-            }
-
-            if (product.variantType === "weight" && selectedWeight) {
-                const { regularPrice, price } = selectedWeight;
-                if (regularPrice > price) {
-                    return Math.round(((regularPrice - price) / regularPrice) * 100);
-                }
-            }
-
-            return 0;
-        } catch (err) {
-            console.error("Error calculating discount:", err);
-            return 0;
-        }
-    };
-
     const productImages = getAllProductImages();
     const hasMultipleImages = productImages.length > 1;
-    const discount = calculateDiscount();
+    // const discount = calculateDiscount();
 
     const handleAddToCart = async () => {
         if (!product || !user) {
@@ -271,19 +249,26 @@ const ProductDetails = () => {
                     toast.success("পণ্য কার্ট থেকে সরানো হয়েছে");
                 }
             } else {
-                const variant = product.variantType === "fashion" && selectedColor
-                    ? { type: 'color', value: selectedColor.name }
-                    : product.variantType === "weight" && selectedWeight
-                        ? { type: 'weight', value: selectedWeight.value }
-                        : null;
+                let variant = null;
+                let price = 0;
 
-                const price = product.variantType === "fashion" && selectedColor
-                    ? product.variants.price
-                    : product.variantType === "weight" && selectedWeight
-                        ? selectedWeight.price
-                        : product.isDigital
-                            ? product.downloadFiles[0]?.resellerPrice || 0
-                            : 0;
+                if (product.variantType === "fashion" && selectedColor && selectedSize) {
+                    variant = {
+                        type: 'color-size',
+                        value: `${selectedColor.name}-${selectedSize.size}`,
+                        color: selectedColor.name,
+                        size: selectedSize.size
+                    };
+                    price = product.variants.price;
+                } else if (product.variantType === "weight" && selectedWeight) {
+                    variant = {
+                        type: 'weight',
+                        value: selectedWeight.value
+                    };
+                    price = selectedWeight.price;
+                } else if (product.isDigital) {
+                    price = product.downloadFiles[0]?.resellerPrice || 0;
+                }
 
                 const response = await axios.post(
                     'https://bijoy-server.vercel.app/api/carts',
@@ -370,8 +355,32 @@ const ProductDetails = () => {
     };
 
     const handleOrderNow = () => {
-        handleAddToCart();
-        console.log("Proceeding to checkout");
+        // ফ্যাশন প্রোডাক্টের জন্য চেক (কালার এবং সাইজ সিলেক্ট করা আছে কিনা)
+        if (product.variantType === "fashion" && (!selectedColor || !selectedSize)) {
+            toast.error("অর্ডার করতে কালার এবং সাইজ সিলেক্ট করুন");
+            return;
+        }
+
+        // ওয়েট প্রোডাক্টের জন্য চেক (ওজন সিলেক্ট করা আছে কিনা)
+        if (product.variantType === "weight" && !selectedWeight) {
+            toast.error("অর্ডার করতে ওজন সিলেক্ট করুন");
+            return;
+        }
+
+        // ডিজিটাল প্রোডাক্টের জন্য কোনো সিলেকশন চেক করার দরকার নেই
+
+        const checkoutData = {
+            product,
+            selectedColor: selectedColor ? {
+                ...selectedColor,
+                selectedSize: selectedSize?.size
+            } : null,
+            selectedSize,
+            selectedWeight,
+            quantity
+        };
+
+        navigate('/checkout', { state: checkoutData });
     };
 
     const downloadImage = async (url, filename) => {
@@ -514,11 +523,11 @@ const ProductDetails = () => {
                                             </div>
                                         </SwiperSlide>
                                     ))}
-                                    {discount > 0 && (
+                                    
                                         <div className="absolute top-4 right-4 bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full z-10 shadow-lg">
-                                            {discount}% OFF
+                                            % OFF
                                         </div>
-                                    )}
+                                    
                                 </Swiper>
 
                                 {hasMultipleImages && (
@@ -563,7 +572,7 @@ const ProductDetails = () => {
                     {/* Product Info */}
                     <div className="bg-white rounded-xl shadow-lg px-3 py-3 md:p-6">
                         <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.productName}</h1>
-                       
+
                         <div className="flex items-center mb-4">
                             <div className="flex text-yellow-400 mr-2">
                                 {[1, 2, 3, 4, 5].map((star) => (
@@ -619,25 +628,47 @@ const ProductDetails = () => {
 
                         <div className="space-y-6 mb-6">
                             {product.variantType === "fashion" && product.variants?.colors && (
-                                <div>
-                                    <h3 className="text-lg font-medium text-gray-900 mb-2">Color</h3>
-                                    <div className="flex gap-2 flex-wrap">
-                                        {product.variants.colors.map((item, indx) => (
-                                            <button
-                                                key={indx}
-                                                className={`px-2 py-1 text-sm md:text-md md:px-4 md:py-2 border rounded-lg text-black transition-colors ${selectedColor?.name === item.name ? "bg-red-500 text-white border-red-500" : "bg-gray-100 border-gray-300 hover:bg-gray-200"}`}
-                                                onClick={() => setSelectedColor(item)}
-                                            >
-                                                {item.name}
-                                            </button>
-                                        ))}
+                                <>
+                                    <div>
+                                        <h3 className="text-lg font-medium text-gray-900 mb-2">Color</h3>
+                                        <div className="flex gap-2 flex-wrap">
+                                            {product.variants.colors.map((item, indx) => (
+                                                <button
+                                                    key={indx}
+                                                    className={`px-2 py-1 text-sm md:text-md md:px-4 md:py-2 border rounded-lg text-black transition-colors ${selectedColor?.name === item.name ? "bg-red-500 text-white border-red-500" : "bg-gray-100 border-gray-300 hover:bg-gray-200"}`}
+                                                    onClick={() => {
+                                                        setSelectedColor(item);
+                                                        if (item.sizes?.length > 0) {
+                                                            setSelectedSize(item.sizes[0]);
+                                                        }
+                                                    }}
+                                                >
+                                                    {item.name}
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
-                                    {selectedColor && (
-                                        <div className="text-sm text-gray-700 mt-2">
-                                            <p><strong>{selectedColor.name}</strong> এর স্টক: <span className="text-red-500 font-semibold">{selectedColor.stock}</span> টি</p>
+
+                                    {selectedColor && selectedColor.sizes && selectedColor.sizes.length > 0 && (
+                                        <div>
+                                            <h3 className="text-lg font-medium text-gray-900 mb-2">Size</h3>
+                                            <div className="flex gap-2 flex-wrap">
+                                                {selectedColor.sizes.map((size, index) => (
+                                                    <button
+                                                        key={index}
+                                                        className={`px-3 py-2 border rounded-lg text-black transition-colors ${selectedSize?.size === size.size ? "bg-red-500 text-white border-red-500" : "bg-gray-100 border-gray-300 hover:bg-gray-200"}`}
+                                                        onClick={() => setSelectedSize(size)}
+                                                    >
+                                                        {size.size}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                            <div className="text-sm text-gray-700 mt-2">
+                                                <p><strong>{selectedColor.name} - {selectedSize?.size}</strong> এর স্টক: <span className="text-red-500 font-semibold">{selectedSize?.stock}</span> টি</p>
+                                            </div>
                                         </div>
                                     )}
-                                </div>
+                                </>
                             )}
 
                             {product.variantType === "weight" && product.variants && (
@@ -678,8 +709,8 @@ const ProductDetails = () => {
                                             </button>
                                         </div>
                                         <span className="text-sm text-gray-600">
-                                            {product.variantType === "fashion" && selectedColor ?
-                                                `${selectedColor.stock} টি স্টক আছে` :
+                                            {product.variantType === "fashion" && selectedColor && selectedSize ?
+                                                `${selectedSize.stock} টি স্টক আছে` :
                                                 product.variantType === "weight" && selectedWeight ?
                                                     `${selectedWeight.stock} টি স্টক আছে` : ''}
                                         </span>

@@ -1,11 +1,12 @@
 import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { authContext } from "../auth-porvider-context/AuthContext";
 import Swal from "sweetalert2";
 import axios from "axios";
 import popupimg from '../../assets/popuplogin-img/Add a heading (1).gif';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import './signinup.css';
+import { authContext } from "../auth-porvider-context/AuthContext";
+
 
 const SignIn = () => {
     const [emailOrPhone, setEmailOrPhone] = useState('');
