@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useCallback } from "react";
 import { FaWhatsapp, FaUser, FaHashtag, FaComment, FaArrowRight, FaGem, FaCoins, FaArrowLeft } from "react-icons/fa";
 import { MdPayment, MdVerifiedUser, MdOutlineDiscount } from "react-icons/md";
 import { RiShieldCheckFill, RiInstagramFill } from "react-icons/ri";
@@ -8,21 +8,24 @@ import axios from "axios";
 import { authContext } from "../../auth-porvider-context/AuthContext";
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import { activeJobContext } from "../../all-contexts/ActiveJobContext";
 
 const MySwal = withReactContent(Swal);
 
 const InstagramMarketingDetails = () => {
-    const { user, loading } = useContext(authContext);
+    const { user, loading: authLoading } = useContext(authContext);
+    const { totalBalance } = useContext(activeJobContext);
     const [quantity, setQuantity] = useState(1);
-    const unitPrice = 2;
+    const unitPrice = 3;
     const totalPrice = (quantity * unitPrice).toFixed(2);
     const [note, setNote] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [userProfile, setUserProfile] = useState(null);
+    const [profileLoading, setProfileLoading] = useState(true);
+    const [showEarningLimitAlert, setShowEarningLimitAlert] = useState(false);
     const navigate = useNavigate();
 
-
-    const showEarningLimitWarning = () => {
+    const showEarningLimitWarning = useCallback(() => {
         MySwal.fire({
             icon: 'info',
             title: 'ইনকাম লিমিট অতিক্রম',
@@ -30,9 +33,10 @@ const InstagramMarketingDetails = () => {
                 <div class="text-left">
                     <p>আপনি ফ্রি ইনকাম এর সীমা (৳200) পার করে ফেলেছেন!</p>
                     <p class="mt-2">আনলিমিটেড ইনকাম করতে ডিপোজিট করুন</p>
+                    <p class="mt-2">(শুধুমাত্র দুই দিনের মদ্ধে পেইড মেম্বারশিপ নিতে পারবেন মাত্র ২১৩ টাকা)</p>
                 </div>
             `,
-            confirmButtonText: '৩১৩ টাকা ডিপোজিট করুন',
+            confirmButtonText: '২১৩ টাকা ডিপোজিট করুন',
             showCancelButton: true,
             cancelButtonText: 'পরে করবো',
             confirmButtonColor: '#3085d6',
@@ -42,38 +46,45 @@ const InstagramMarketingDetails = () => {
                 navigate('/verify-alert');
             }
         });
-    };
-    const fetchUserData = async () => {
-        if (user) {
-            try {
-                const response = await fetch(`https://bijoy-server.vercel.app/users/by-uid/${user.uid}`);
-                const data = await response.json();
-                if (data.success) {
-                    setUserProfile(data.user);
+    }, [navigate]);
+
+    const fetchUserData = useCallback(async () => {
+        if (!user) return;
+
+        try {
+            const response = await axios.get(`https://bijoy-server.vercel.app/users/by-uid/${user.uid}`);
+
+            if (response.data.success) {
+                setUserProfile(prev => {
+                    // Only update if payment status changed
+                    if (!prev || prev.payment !== response.data.user.payment) {
+                        return response.data.user;
+                    }
+                    return prev;
+                });
+
+                // Check if user has crossed earning limit and not paid
+                if (totalBalance >= 200 && response.data.user.payment === "unpaid" && !showEarningLimitAlert) {
+                    setShowEarningLimitAlert(true);
+                    showEarningLimitWarning();
                 }
-            } catch (error) {
-                console.error('Error fetching user data:', error);
             }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        } finally {
+            setProfileLoading(false);
         }
-    };
+    }, [user, totalBalance, showEarningLimitAlert, showEarningLimitWarning]);
 
     useEffect(() => {
-        if (!loading) {
-            fetchUserData();
-            const interval = setInterval(() => {
-                fetchUserData();
-            }, 5000);
+        if (!authLoading) {
+            fetchUserData(); // Initial load
+
+            // Set up interval with cleanup (30 seconds interval)
+            const interval = setInterval(fetchUserData, 1000);
             return () => clearInterval(interval);
         }
-    }, [user, loading]);
-
-    const checkEarningLimit = () => {
-        if (!userProfile) return false;
-
-        // Check if user has earned more than 200 BDT
-        const totalEarned = userProfile.totalBalance || 0;
-        return totalEarned > 200;
-    };
+    }, [authLoading, fetchUserData]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -89,19 +100,31 @@ const InstagramMarketingDetails = () => {
             return;
         }
 
-        // Check if user has exceeded earning limit and is unpaid
-        if (checkEarningLimit() && userProfile.payment === "unpaid") {
+        // Check if user has crossed earning limit (200) and is unpaid
+        if (totalBalance >= 200 && userProfile?.payment === "unpaid") {
             showEarningLimitWarning();
             return;
         }
 
-        // Check if user is unpaid (for first time users)
-        if (userProfile && userProfile.payment === "unpaid") {
-            showEarningLimitWarning();
+        // If user is submitting beyond free limit, check payment status
+        if (totalBalance >= 200 && userProfile?.payment !== "paid") {
+            MySwal.fire({
+                icon: 'info',
+                title: 'প্রিমিয়াম মেম্বারশিপ প্রয়োজন',
+                text: 'এই সার্ভিস ব্যবহার করতে আপনাকে প্রিমিয়াম মেম্বারশিপ এক্টিভেট করতে হবে',
+                confirmButtonText: 'এক্টিভেট করুন',
+                showCancelButton: true,
+                cancelButtonText: 'বাতিল করুন'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    navigate('/verify-alert');
+                }
+            });
+            
             return;
         }
 
-        // If all checks passed, proceed with submission
+        // If everything is okay, proceed with submission
         setIsSubmitting(true);
 
         try {
@@ -120,7 +143,7 @@ const InstagramMarketingDetails = () => {
             const res = await axios.post("https://bijoy-server.vercel.app/api/active-jobs", jobData);
 
             if (res.data.success) {
-                await MySwal.fire({
+                MySwal.fire({
                     icon: 'success',
                     title: 'সফলভাবে সাবমিট হয়েছে!',
                     html: 'আপনার কাজের পরিমাণ সাবমিট করা হয়েছে। স্ট্যাটাস দেখতে আপনার ড্যাশবোর্ড চেক করুন।',
@@ -129,16 +152,11 @@ const InstagramMarketingDetails = () => {
                 setQuantity(1);
                 setNote("");
             } else {
-                await MySwal.fire({
-                    icon: 'error',
-                    title: 'সাবমিট ব্যর্থ হয়েছে',
-                    text: res.data.message || 'সাবমিট করতে ব্যর্থ হয়েছে।',
-                    confirmButtonText: 'ঠিক আছে'
-                });
+                throw new Error(res.data.message || 'সাবমিট করতে ব্যর্থ হয়েছে।');
             }
         } catch (error) {
             console.error("Submit Error:", error);
-            await MySwal.fire({
+            MySwal.fire({
                 icon: 'error',
                 title: 'সমস্যা হয়েছে',
                 text: error.response?.data?.message || error.message || 'একটি সমস্যা হয়েছে',
@@ -148,6 +166,17 @@ const InstagramMarketingDetails = () => {
             setIsSubmitting(false);
         }
     };
+
+    if (authLoading || profileLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900">
+                <div className="text-white text-center">
+                    <div className="w-16 h-16 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                    <p className="mt-4 text-xl">লোড হচ্ছে...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen mt-15 bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 p-4 md:p-8 text-white flex justify-center items-center">
@@ -316,8 +345,8 @@ const InstagramMarketingDetails = () => {
 
                                 <button
                                     type="submit"
-                                    disabled={isSubmitting}
-                                    className={`w-full bg-gradient-to-r from-pink-500 via-purple-600 to-blue-600 text-white py-5 rounded-xl font-bold hover:from-pink-600 hover:via-purple-700 hover:to-blue-700 transition-all shadow-lg transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 relative overflow-hidden group ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+                                    disabled={isSubmitting || (totalBalance >= 200 && userProfile?.payment === "unpaid")}
+                                    className={`w-full bg-gradient-to-r from-pink-500 via-purple-600 to-blue-600 text-white py-5 rounded-xl font-bold hover:from-pink-600 hover:via-purple-700 hover:to-blue-700 transition-all shadow-lg transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 relative overflow-hidden group ${isSubmitting || (totalBalance >= 200 && userProfile?.payment === "unpaid") ? 'opacity-70 cursor-not-allowed' : ''}`}
                                 >
                                     {isSubmitting ? (
                                         <div className="flex items-center gap-2">

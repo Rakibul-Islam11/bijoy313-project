@@ -1,5 +1,10 @@
+import { FaUsers, FaMoneyBillWave, FaCrown } from 'react-icons/fa';
+
 const ReferralsSection = ({ userData }) => {
-    // earnings এর সকল কোড এখানে পেস্ট করুন
+    // Calculate referral data
+    const referrals = userData?.referrals?.length || 0;
+    const isLeader = referrals >= 13;
+    const referLeft = Math.max(0, 13 - referrals);
     return (
         <div className="space-y-6 text-black">
             {/* Header */}

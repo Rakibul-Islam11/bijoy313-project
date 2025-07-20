@@ -8,6 +8,7 @@ const HistorySection = () => {
     const [activeTab, setActiveTab] = useState("Pending");
     const { user } = useContext(authContext);
     const [jobHistory, setJobHistory] = useState([]);
+    console.log(jobHistoryReport);
 
     useEffect(() => {
         let interval;
@@ -55,10 +56,17 @@ const HistorySection = () => {
 
     const filteredJobs = getFilteredJobs();
 
+    const hasApprovedWithoutIssues = (job) => {
+        return job.reasons?.some(reason => reason.heading === "Approved Without Issues");
+    };
+
     const getButtonText = (job) => {
-        if (activeTab === "Pending") return "পেন্ডিং এ আছে অপেক্ষা করুন";
+        if (activeTab === "Pending") return "পেন্ডিং এ আছে অপেক্ষা করুন সর্বোচ্চ(৭২ঘন্টা)";
         if (activeTab === "Processing") return "প্রসেসিং এ আছে অপেক্ষা করুন";
         if (activeTab === "Completed") {
+            if (hasApprovedWithoutIssues(job)) {
+                return "সকল কাজ approved হয়েছে";
+            }
             return job.reasons && job.reasons.length > 0 ? "ক্যন্সেল আইডি দেখুন" : "সম্পন্ন";
         }
         return "বিস্তারিত দেখুন";
@@ -71,7 +79,7 @@ const HistorySection = () => {
     };
 
     return (
-        <div className="space-y-6 mt-15 text-black">
+        <div className="space-y-6 mt-15 md:mt-0 text-black">
             {/* Header */}
             <div className="bg-gradient-to-r from-[#c5064f] to-[#e63772] p-6 rounded-2xl text-white">
                 <h2 className="text-2xl font-bold flex items-center gap-3">
@@ -126,12 +134,15 @@ const HistorySection = () => {
                                 <span className={`text-xs font-semibold px-3 py-1 rounded-full ${job.status === 'success' ? 'bg-green-100 text-green-800' :
                                     job.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
                                         job.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                                            job.status === 'cancel' || job.reasons ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
+                                            job.status === 'cancel' || job.reasons ?
+                                                hasApprovedWithoutIssues(job) ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                                : 'bg-gray-100 text-gray-800'
                                     }`}>
                                     {job.status === 'success' && "সম্পন্ন"}
                                     {job.status === 'pending' && "পেন্ডিং"}
                                     {job.status === 'processing' && "প্রসেসিং"}
-                                    {(job.status === 'cancel' || job.reasons) && "কিছু কাজ বাতিল হয়েছে"}
+                                    {(job.status === 'cancel' || job.reasons) &&
+                                        (hasApprovedWithoutIssues(job) ? "সকল কাজ approved হয়েছে" : "কিছু কাজ বাতিল হয়েছে")}
                                 </span>
                             </div>
                             <p className="text-sm text-gray-500 mt-1">
@@ -154,7 +165,7 @@ const HistorySection = () => {
                             )}
                             {(job.totalPrice || job.balance) && (
                                 <div>
-                                    <p className="text-gray-500">{job.totalPrice ? "মোট" : "ব্যালেন্স"}</p>
+                                    <p className="text-gray-500">{job.totalPrice ? "টাকা" : "ব্যালেন্স"}</p>
                                     <p className="font-bold text-[#c5064f]">
                                         ৳ {job.totalPrice?.$numberInt || job.totalPrice || job.balance?.$numberInt || job.balance}
                                     </p>
@@ -183,7 +194,7 @@ const HistorySection = () => {
                         </div>
 
                         {/* Reasons Section for Cancelled Tab */}
-                        {activeTab === "Cancelled" && job.reasons && (
+                        {activeTab === "Cancelled" && job.reasons && !hasApprovedWithoutIssues(job) && (
                             <div className="px-5 pb-3">
                                 <h4 className="font-semibold text-gray-700 mb-2">বাতিলের কারণ:</h4>
                                 <div className="space-y-2">
@@ -203,7 +214,7 @@ const HistorySection = () => {
                                 onClick={getButtonText(job) === "ক্যন্সেল আইডি দেখুন" ? handleButtonClick : undefined}
                                 className={`w-full py-2 rounded-lg transition ${activeTab === "Pending" || activeTab === "Processing"
                                     ? "bg-gray-400 text-white cursor-not-allowed"
-                                    : getButtonText(job) === "সম্পন্ন"
+                                    : getButtonText(job) === "সম্পন্ন" || getButtonText(job) === "সকল কাজ approved হয়েছে"
                                         ? "bg-green-500 text-white cursor-default"
                                         : "bg-[#c5064f] text-white hover:bg-[#a30544]"
                                     }`}

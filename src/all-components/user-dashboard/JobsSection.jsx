@@ -1,5 +1,15 @@
+import { Link } from 'react-router-dom';
+import { FaBriefcase, FaHourglassHalf, FaCheckCircle, FaMoneyBillWave } from 'react-icons/fa';
+
 const JobsSection = ({ userData }) => {
-    // earnings এর সকল কোড এখানে পেস্ট করুন
+    // Calculate job data from userData
+    const activeJobs = userData?.jobs?.filter(job => job.status === 'active') || [];
+    const pendingJobs = userData?.jobs?.filter(job => job.status === 'pending') || [];
+    const completedJobs = userData?.jobs?.filter(job => job.status === 'completed') || [];
+
+    // Calculate total earnings from completed jobs
+    const totalEarnings = completedJobs.reduce((sum, job) => sum + (job.price || 0), 0);
+
     return (
         <div className="space-y-6 text-black">
             {/* Header */}
@@ -17,7 +27,7 @@ const JobsSection = ({ userData }) => {
                     <div className="flex justify-between">
                         <div>
                             <h3 className="font-semibold text-gray-600">Active Jobs</h3>
-                            <p className="text-2xl font-bold mt-1">{activeJobs.length}</p>
+                            <p className="text-2xl font-bold mt-1">4</p>
                         </div>
                         <div className="bg-blue-100 p-2 rounded-lg text-blue-600">
                             <FaBriefcase className="h-6 w-6" />

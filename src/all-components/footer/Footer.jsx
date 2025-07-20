@@ -67,19 +67,19 @@ const Footer = () => {
                                 <li><a href="/" className="flex items-center gap-2 text-gray-300 hover:text-orange-500"><FaHome /> Home</a></li>
                                 <li><a href="/about" className="flex items-center gap-2 text-gray-300 hover:text-orange-500"><FaInfoCircle /> About</a></li>
                                 <li><a href="/contact" className="flex items-center gap-2 text-gray-300 hover:text-orange-500"><FaEnvelope /> Contact</a></li>
-                                <li><a href="/login" className="flex items-center gap-2 text-gray-300 hover:text-orange-500"><FaSignInAlt /> Login</a></li>
-                                <li><a href="/register" className="flex items-center gap-2 text-gray-300 hover:text-orange-500"><FaUserPlus /> Register</a></li>
+                                <li><a href="/sign-in" className="flex items-center gap-2 text-gray-300 hover:text-orange-500"><FaSignInAlt /> Login</a></li>
+                                <li><a href="/pop-up-sign" className="flex items-center gap-2 text-gray-300 hover:text-orange-500"><FaUserPlus /> Register</a></li>
                             </ul>
                         </div>
 
                         <div>
                             <h3 className="text-orange-500 text-lg font-medium mb-4 pb-2 border-b border-orange-500/30">Our Programs</h3>
                             <ul className="space-y-2">
-                                <li><a href="/referral" className="flex items-center gap-2 text-gray-300 hover:text-orange-500"><FaShareAlt /> Referral System</a></li>
-                                <li><a href="/income" className="flex items-center gap-2 text-gray-300 hover:text-orange-500"><FaMoneyBillAlt /> Income System</a></li>
+                                <li><a href="/dashboard?section=referrals" className="flex items-center gap-2 text-gray-300 hover:text-orange-500"><FaShareAlt /> Referral System</a></li>
+                                <li><a href="/dashboard?section=earnings" className="flex items-center gap-2 text-gray-300 hover:text-orange-500"><FaMoneyBillAlt /> Income System</a></li>
                                 <li><a href="/leadership" className="flex items-center gap-2 text-gray-300 hover:text-orange-500"><FaUsers /> Leadership Program</a></li>
                                 <li><a href="/dropship" className="flex items-center gap-2 text-gray-300 hover:text-orange-500"><FaTruck /> Dropshipping</a></li>
-                                <li><a href="/microjob" className="flex items-center gap-2 text-gray-300 hover:text-orange-500"><FaBriefcase /> Microjobs</a></li>
+                                <li><a href="/micro-job" className="flex items-center gap-2 text-gray-300 hover:text-orange-500"><FaBriefcase /> Microjobs</a></li>
                             </ul>
                         </div>
 
@@ -107,11 +107,11 @@ const Footer = () => {
                             },
                             {
                                 key: 'program', title: 'Our Programs', links: [
-                                    { href: '/referral', icon: <FaShareAlt />, label: 'Referral System' },
-                                    { href: '/income', icon: <FaMoneyBillAlt />, label: 'Income System' },
+                                    { href: '/dashboard?section=referrals', icon: <FaShareAlt />, label: 'Referral System' },
+                                    { href: '/dashboard?section=earnings', icon: <FaMoneyBillAlt />, label: 'Income System' },
                                     { href: '/leadership', icon: <FaUsers />, label: 'Leadership Program' },
                                     { href: '/dropship', icon: <FaTruck />, label: 'Dropshipping' },
-                                    { href: '/microjob', icon: <FaBriefcase />, label: 'Microjobs' },
+                                    { href: '/micro-job', icon: <FaBriefcase />, label: 'Microjobs' },
                                 ]
                             },
                             {

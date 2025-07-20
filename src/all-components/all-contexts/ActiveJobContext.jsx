@@ -14,6 +14,7 @@ const ActiveJobProvider = ({ children }) => {
     const [error, setError] = useState("");
     const [totalBalance, setTotalBalance] = useState(0);
     const [balanceState, setBalanceState] = useState(null);
+console.log(totalBalance);
 
     // প্রথম‑বার লোডার দেখানোর জন্য:
     const initialLoad = useRef(true);
@@ -115,7 +116,7 @@ const ActiveJobProvider = ({ children }) => {
     }, [user?.uid, loading]);
     // fallback
     const balance = balanceState?.balance ?? 0;
-    console.log(balance);
+    
 
     const serveData = {
         jobHistoryReport,

@@ -4,7 +4,7 @@ import { FiHome, FiEye, FiEyeOff, FiCopy } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { FaUserAlt, FaLock, FaInfoCircle, FaSignOutAlt } from "react-icons/fa";
 import { MdWallet } from "react-icons/md";
-import navlogo from '../../assets/navbrand-logo/Untitled design (4).png';
+import navlogo from '../../assets/navbrand-logo/Untitled design (1).png';
 import { authContext } from "../auth-porvider-context/AuthContext";
 import Swal from 'sweetalert2';
 import './mobilemenu.css';

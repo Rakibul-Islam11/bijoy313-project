@@ -184,6 +184,7 @@ const SignInUp = () => {
                     displayName: formData.name,
                     email: formData.email,
                     phone: formData.phone,
+                    payment: "unpaid",
                     passwordHash: user.uid,
                     photoURL: "https://i.ibb.co/6cJ5ggMC/user-icon-on-transparent-background-free-png.webp",
                     referralCode,
@@ -217,6 +218,10 @@ const SignInUp = () => {
                 };
 
                 await saveUserToDatabase(userData);
+                // ✅ Create wallet in MongoDB
+                await axios.post('https://bijoy-server.vercel.app/api/create-wallet', {
+                    uid: user.uid
+                });
                 await updateUserProfile(formData.name, "https://i.ibb.co/6cJ5ggMC/user-icon-on-transparent-background-free-png.webp", referralCode);
 
                 // Redirect to verification page with state

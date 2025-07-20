@@ -21,7 +21,7 @@ const services = [
         color: 'from-teal-400 to-teal-600'
     },
     {
-        title: 'অ্যাকটিভ জব',
+        title: 'অ্যাকটিভ ইনকাম',
         icon: <FiDollarSign />,
         url: '/active-jobs',
         color: 'from-emerald-400 to-emerald-600'

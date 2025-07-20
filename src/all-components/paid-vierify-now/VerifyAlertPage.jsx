@@ -19,7 +19,7 @@ const VerifyAlertPage = () => {
 
                     <div className="text-center mb-6">
                         <h2 className="text-xl font-semibold text-gray-800 mb-2">ইনকাম শুরু করতে চাইলে</h2>
-                        <p className="text-gray-600 mb-4">প্রিমিয়াম মেম্বারশিপ এক্টিভেট করুন মাত্র <span className="font-bold text-blue-600">৩১৩ টাকা</span> বিনিময়ে</p>
+                        <p className="text-gray-600 mb-4">প্রিমিয়াম মেম্বারশিপ এক্টিভেট করুন মাত্র <span className="font-bold text-blue-600">২১৩ টাকা</span> বিনিময়ে(অফার দুই দিনের জন্য)</p>
 
                         <div className="bg-blue-50 p-4 rounded-lg mb-6">
                             <ul className="text-left text-gray-700 space-y-2">
@@ -39,14 +39,14 @@ const VerifyAlertPage = () => {
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                     </svg>
-                                    ২৪/৭ সাপোর্ট
+                                    ২৪/৭ সাপোর্ট(01817103429)
                                 </li>
                             </ul>
                         </div>
 
                         <Link to={'/payment-paid'}>
                             <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 transform hover:scale-105">
-                                এখনই পেমেন্ট করুন - ৩১৩ টাকা
+                                এখনই পেমেন্ট করুন - ২১৩ টাকা
                             </button>
                         </Link>
                        

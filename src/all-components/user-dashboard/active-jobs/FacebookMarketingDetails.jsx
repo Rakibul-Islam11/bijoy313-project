@@ -16,7 +16,7 @@ const FacebookMarketingDetails = () => {
     const { user, loading } = useContext(authContext);
     const { totalBalance } = useContext(activeJobContext);
     const [quantity, setQuantity] = useState(1);
-    const unitPrice = 5;
+    const unitPrice = 8;
     const totalPrice = (quantity * unitPrice).toFixed(2);
     const [note, setNote] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,12 +31,6 @@ const FacebookMarketingDetails = () => {
                 const data = await response.json();
                 if (data.success) {
                     setUserProfile(data.user);
-
-                    // Check if user has crossed earning limit and not paid
-                    if (totalBalance > 200 && data.userProfile.payment === "unpaid" && !showEarningLimitAlert) {
-                        setShowEarningLimitAlert(true);
-                        showEarningLimitWarning();
-                    }
                 }
             } catch (error) {
                 console.error('Error fetching user data:', error);
@@ -52,9 +46,10 @@ const FacebookMarketingDetails = () => {
                 <div class="text-left">
                     <p>আপনি ফ্রি ইনকাম এর সীমা (৳200) পার করে ফেলেছেন!</p>
                     <p class="mt-2">আনলিমিটেড ইনকাম করতে ডিপোজিট করুন</p>
+                    <p class="mt-2">(শুধুমাত্র দুই দিনের মদ্ধে পেইড মেম্বারশিপ নিতে পারবেন মাত্র ২১৩ টাকা)</p>
                 </div>
             `,
-            confirmButtonText: '৩১৩ টাকা ডিপোজিট করুন',
+            confirmButtonText: '২১৩ টাকা ডিপোজিট করুন',
             showCancelButton: true,
             cancelButtonText: 'পরে করবো',
             confirmButtonColor: '#3085d6',
@@ -74,19 +69,30 @@ const FacebookMarketingDetails = () => {
             }, 5000);
             return () => clearInterval(interval);
         }
-    }, [user, loading, totalBalance]);
+    }, [user, loading]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Check if user has crossed earning limit and not paid
-        if (totalBalance > 200 && userProfile?.payment === "unpaid") {
+        // Check if user is logged in
+        if (!user) {
+            MySwal.fire({
+                icon: 'error',
+                title: 'লগইন প্রয়োজন',
+                text: 'আপনাকে প্রথমে লগইন করতে হবে।',
+                confirmButtonText: 'ঠিক আছে'
+            });
+            return;
+        }
+
+        // Check if user has crossed earning limit (200) and is unpaid
+        if (totalBalance >= 200 && userProfile?.payment === "unpaid") {
             showEarningLimitWarning();
             return;
         }
 
-        // Check if user is unpaid first
-        if (userProfile && userProfile.payment === "unpaid") {
+        // If user is submitting beyond free limit, check payment status
+        if (totalBalance >= 200 && userProfile?.payment !== "paid") {
             MySwal.fire({
                 icon: 'info',
                 title: 'প্রিমিয়াম মেম্বারশিপ প্রয়োজন',
@@ -102,18 +108,7 @@ const FacebookMarketingDetails = () => {
             return;
         }
 
-        // If user is not logged in
-        if (!user) {
-            MySwal.fire({
-                icon: 'error',
-                title: 'লগইন প্রয়োজন',
-                text: 'আপনাকে প্রথমে লগইন করতে হবে।',
-                confirmButtonText: 'ঠিক আছে'
-            });
-            return;
-        }
-
-        // If user is paid, proceed with submission
+        // If everything is okay, proceed with submission
         setIsSubmitting(true);
 
         try {
@@ -286,7 +281,7 @@ const FacebookMarketingDetails = () => {
                                 <div className="mb-4 md:mb-8 relative group">
                                     <div className="absolute -inset-1 bg-gradient-to-r from-green-500 to-green-600 rounded-xl blur opacity-75 group-hover:opacity-100 transition-all duration-300 animate-tilt"></div>
                                     <a
-                                        href="https://wa.me/yourwhatsapplink"
+                                        href="https://wa.me/+8801795-121855"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="relative flex items-center justify-center gap-3 bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"

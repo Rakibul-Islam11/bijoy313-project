@@ -16,7 +16,7 @@ const WhatsAppMarketingDetails = () => {
     const { user, loading } = useContext(authContext);
     const { totalBalance } = useContext(activeJobContext);
     const [quantity, setQuantity] = useState(1);
-    const unitPrice = 1;
+    const unitPrice = 20;
     const totalPrice = (quantity * unitPrice).toFixed(2);
     const [note, setNote] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -71,20 +71,19 @@ const WhatsAppMarketingDetails = () => {
         if (checkEarningLimit() && userProfile.payment === "unpaid") {
             MySwal.fire({
                 icon: 'info',
-                title: 'আনলিমিটেড ইনকামের জন্য ডিপোজিট প্রয়োজন',
+                title: 'ইনকাম লিমিট অতিক্রম',
                 html: `
-                    <div>
-                        <p>আপনি ফ্রি ইনকাম এর সীমা (২০০ টাকা) পার করে ফেলেছেন</p>
-                        <p class="mt-2 font-bold text-yellow-400">আনলিমিটেড ইনকাম করতে ডিপোজিট করুন</p>
-                    </div>
-                `,
-                confirmButtonText: '৩১৩ টাকা ডিপোজিট করুন',
+                <div class="text-left">
+                    <p>আপনি ফ্রি ইনকাম এর সীমা (৳200) পার করে ফেলেছেন!</p>
+                    <p class="mt-2">আনলিমিটেড ইনকাম করতে ডিপোজিট করুন</p>
+                    <p class="mt-2">(শুধুমাত্র দুই দিনের মদ্ধে পেইড মেম্বারশিপ নিতে পারবেন মাত্র ২১৩ টাকা)</p>
+                </div>
+            `,
+                confirmButtonText: '২১৩ টাকা ডিপোজিট করুন',
                 showCancelButton: true,
-                cancelButtonText: 'বাতিল করুন',
-                customClass: {
-                    confirmButton: 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-md',
-                    cancelButton: 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-2 px-4 rounded-lg shadow-md'
-                }
+                cancelButtonText: 'পরে করবো',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33'
             }).then((result) => {
                 if (result.isConfirmed) {
                     navigate('/verify-alert');

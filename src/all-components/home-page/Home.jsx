@@ -38,9 +38,9 @@ const Home = () => {
             
             {/* Floating Button - Left */}
             <div className="fixed bottom-20 md:top-20 -left-13 md:-left-6 z-50">
-                <Link to="/active-jobs">
+                <Link to="/payment-paid">
                     <button className="flex items-center gap-2 bg-[#fff7d6] text-black text-[14px] md:text-[16px] md:font-semibold py-2 md:py-4 px-2 md:px-4 rounded-full shadow-md border-2 !pl-14 animate-border">
-                        একটিভ জবস
+                        ভেরিফাই করুন
                         <VscVmActive className="text-[14px] md:text-xl text-blue-600" />
                     </button>
                 </Link>
@@ -51,7 +51,7 @@ const Home = () => {
                 <Link to={user ? "/active-jobs" : "/pop-up-sign"}>
                     <button className="flex items-center gap-2 bg-[#fff7d6] text-black text-[14px] md:text-[16px] md:font-semibold py-2 md:py-4 px-2 md:px-4 rounded-full shadow-md border-2 !pr-14 animate-border">
                         <FaUserPlus className="text-[14px] md:text-xl text-green-600" />
-                        রেফার & আর্ন
+                        লার্নিং & আরনিং
                     </button>
                 </Link>
             </div>

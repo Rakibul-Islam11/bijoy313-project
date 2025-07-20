@@ -1,5 +1,24 @@
+import { FaMoneyBillWave, FaBriefcase } from 'react-icons/fa';
+
+    
 const EarningsSection = ({ userData }) => {
-    // earnings এর সকল কোড এখানে পেস্ট করুন
+
+    // Calculate earnings data from userData
+    const completedJobs = userData?.jobs?.filter(job => job.status === 'completed') || [];
+    const activeJobs = userData?.jobs?.filter(job => job.status === 'active') || [];
+
+    // Calculate total earnings from completed jobs
+    const totalEarnings = completedJobs.reduce((sum, job) => sum + (job.price || 0), 0);
+
+    // Calculate monthly income (this month's earnings)
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+    const monthlyIncome = completedJobs
+        .filter(job => {
+            const jobDate = new Date(job.completedDate || job.createdAt);
+            return jobDate.getMonth() === currentMonth && jobDate.getFullYear() === currentYear;
+        })
+        .reduce((sum, job) => sum + (job.price || 0), 0);
     return (
         <div className="space-y-6 text-black">
             {/* Header */}
@@ -155,7 +174,7 @@ const EarningsSection = ({ userData }) => {
                                         <div className="text-sm font-medium text-gray-900">{transaction.client}</div>
                                         <div className="text-sm text-gray-500">{transaction.project}</div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">{transaction.amount}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">{}</td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${transaction.status === 'Paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
                                             {transaction.status}

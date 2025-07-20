@@ -94,7 +94,7 @@ const PasswordReset = () => {
                     text: 'Password reset successfully!',
                 }).then(() => {
                     // Redirect to login or home page
-                    window.location.href = '/login';
+                    window.location.href = '/sign-in';
                 });
             } else {
                 Swal.fire({
@@ -275,7 +275,7 @@ const PasswordReset = () => {
                                 <button
                                     type="submit"
                                     disabled={isLoading}
-                                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                    className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
                                 >
                                     {isLoading ? (
                                         <>
@@ -285,7 +285,7 @@ const PasswordReset = () => {
                                             </svg>
                                             Resetting...
                                         </>
-                                    ) : 'Reset Password'}
+                                    ) : 'পাসওয়ার্ড পরিবর্তন করুন'}
                                 </button>
                             </div>
 

@@ -46,6 +46,7 @@ import VerificationPopup from './all-components/verification-popup/VerificationP
 import VerifyMemberManual from './all-components/admin-all-pages/VerifyMemberManual.jsx';
 import GetWork from './all-components/admin-all-pages/GetWork.jsx';
 import BalanceShow from './all-components/admin-all-pages/BalanceShow.jsx';
+import MakePaidUser from './all-components/admin-all-pages/MakePaidUser.jsx';
 
 
 const routes = createBrowserRouter([
@@ -216,6 +217,10 @@ const routes = createBrowserRouter([
           {
             path: 'verify-member',
             element: <VerifyMemberManual></VerifyMemberManual>
+          },
+          {
+            path: 'make-paid-user',
+            element: <MakePaidUser></MakePaidUser>
           }
 
         ]

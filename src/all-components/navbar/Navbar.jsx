@@ -9,9 +9,11 @@ import { MobileMenuContext } from "../all-contexts/MobileMenuContext";
 import NotificationBell from "./NotificationBell";
 import axios from "axios";
 import CartSidebar from "../cart-compo/CartSidebar";
+import { activeJobContext } from "../all-contexts/ActiveJobContext";
 
 
 const Navbar = () => {
+    const { balance } = useContext(activeJobContext)
     const [activeDropdown, setActiveDropdown] = useState(null);
     const howItWorksRef = useRef(null);
     const featuresRef = useRef(null);
@@ -83,7 +85,7 @@ const Navbar = () => {
             // Set Interval for polling
             const interval = setInterval(() => {
                 fetchUserData();
-            }, 5000); // every 5 seconds
+            }, 2000); // every 5 seconds
 
             return () => clearInterval(interval);
         }
@@ -443,7 +445,7 @@ const Navbar = () => {
                                             Balance
                                         </p>
                                         <p className="text-sm font-extrabold tracking-wide animate-glow">
-                                            {showBalance ? `৳${user.balance?.toFixed(2) || '0.00'}` : 'Tap'}
+                                            {showBalance ? `৳${balance || '0.00'}` : 'Check'}
                                         </p>
                                     </div>
                                 </div>
@@ -508,7 +510,7 @@ const Navbar = () => {
                                                     <div className="flex justify-between items-center relative z-10">
                                                         <div>
                                                             <span className="text-xs font-medium text-gray-500">Account Balance</span>
-                                                            <p className="text-lg font-bold text-[#ff0768] mt-1">$1,245.00</p>
+                                                            <p className="text-lg font-bold text-[#ff0768] mt-1">{balance} Tk</p>
                                                         </div>
                                                         <svg className="w-6 h-6 text-[#ff0768]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -688,7 +690,7 @@ const Navbar = () => {
                                         Balance
                                     </p>
                                     <p className="text-sm font-extrabold tracking-wide animate-glow">
-                                        {showBalance ? `৳${user.balance?.toFixed(2) || '0.00'}` : 'Tap'}
+                                        {showBalance ? `৳${balance || '0.00'}` : 'Check'}
                                     </p>
                                 </div>
                             </div>

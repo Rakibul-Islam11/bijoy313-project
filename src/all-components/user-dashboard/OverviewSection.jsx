@@ -1,13 +1,37 @@
 import { FaBookOpen, FaBriefcase, FaMoneyBillWave, FaUsers } from 'react-icons/fa';
-import walletImg from '../../assets/wallet-img/image.png'
+import walletImg from '../../assets/wallet-img/image.png';
+import { useContext } from 'react';
+import { activeJobContext } from '../all-contexts/ActiveJobContext';
+
 const OverviewSection = ({ userData }) => {
-    // overview এর সকল কোড এখানে পেস্ট করুন
-    
+    const { balance } = useContext(activeJobContext)
+    // Calculate data from userData
+    const totalBalance = userData?.wallet?.balance || 0;
+    const availableBalance = userData?.wallet?.available || 0;
+    const monthlyEarnings = userData?.wallet?.monthlyEarnings || 0;
+    const pendingAmount = userData?.wallet?.pending || 0;
+    const withdrawnAmount = userData?.wallet?.withdrawn || 0;
+    const activeJobsCount = userData?.jobs?.filter(job => job.status === 'active')?.length || 0;
+    const purchasedCoursesCount = userData?.courses?.length || 0;
+    const referralsCount = userData?.referrals?.length || 0;
+
+    // Recent transactions data
+    const recentTransactions = [
+        { id: 1, type: 'credit', amount: 450.00, description: 'Project Payment - Website Redesign', date: 'Today, 10:45 AM', status: 'completed' },
+        { id: 2, type: 'debit', amount: 120.00, description: 'Withdrawal to Bank', date: 'Yesterday, 3:22 PM', status: 'completed' },
+        { id: 3, type: 'credit', amount: 275.50, description: 'Project Payment - Mobile App', date: 'Jul 8, 2023', status: 'pending' }
+    ];
+
+    // Handle wallet actions
+    const handleWalletAction = (action) => {
+        console.log(`Wallet action: ${action}`);
+        // Implement wallet action logic here
+    };
+
     return (
         <div className="space-y-6 text-black">
             {/* Desktop Layout */}
-            <div className="hidden md:block">
-
+            <div className="hidden md:flex flex-col gap-5">
                 {/* Welcome Header */}
                 <div>
                     <h2 className="text-2xl font-bold mb-2 text-[#c5064f]">👋 Welcome to your Dashboard</h2>
@@ -28,8 +52,8 @@ const OverviewSection = ({ userData }) => {
                     >
                         <div>
                             <h3 className="font-medium opacity-90">Total Balance</h3>
-                            <p className="text-3xl font-bold my-2">৳ </p>
-                            <p className="text-sm opacity-80">Available to withdraw: ৳ </p>
+                            <p className="text-3xl font-bold my-2">৳ {balance}</p>
+                            <p className="text-sm opacity-80">Available to withdraw: ৳ {balance}</p>
                         </div>
                         <div className="bg-white/20 p-2 rounded-lg">
                             <FaMoneyBillWave className="h-8 w-8" />
@@ -39,22 +63,23 @@ const OverviewSection = ({ userData }) => {
                     <div className="mt-6 grid grid-cols-3 gap-4">
                         <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm">
                             <p className="text-xs opacity-80">This Month</p>
-                            <p className="font-semibold">৳ </p>
+                            <p className="font-semibold">৳ {monthlyEarnings.toLocaleString()}</p>
                         </div>
                         <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm">
                             <p className="text-xs opacity-80">Pending</p>
-                            <p className="font-semibold">৳ </p>
+                            <p className="font-semibold">৳ {pendingAmount.toLocaleString()}</p>
                         </div>
                         <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm">
                             <p className="text-xs opacity-80">Withdrawn</p>
-                            <p className="font-semibold">৳ </p>
+                            <p className="font-semibold">৳ {withdrawnAmount.toLocaleString()}</p>
                         </div>
                     </div>
 
                     <div className="mt-6 flex gap-3">
                         {/* Deposit */}
                         <button
-                            
+                            onClick={() => handleWalletAction('deposit')}
+                            className="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -64,7 +89,8 @@ const OverviewSection = ({ userData }) => {
 
                         {/* Withdraw */}
                         <button
-                           
+                            onClick={() => handleWalletAction('withdraw')}
+                            className="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition"
                         >
                             <FaMoneyBillWave className="h-5 w-5" />
                             Withdraw
@@ -72,7 +98,8 @@ const OverviewSection = ({ userData }) => {
 
                         {/* Transfer */}
                         <button
-                            
+                            onClick={() => handleWalletAction('transfer')}
+                            className="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -82,7 +109,8 @@ const OverviewSection = ({ userData }) => {
 
                         {/* History */}
                         <button
-                           
+                            onClick={() => handleWalletAction('history')}
+                            className="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
@@ -99,7 +127,7 @@ const OverviewSection = ({ userData }) => {
                         <div className="flex justify-between">
                             <div>
                                 <h3 className="font-semibold text-gray-600">Earnings</h3>
-                                <p className="text-2xl font-bold mt-1">৳ </p>
+                                <p className="text-2xl font-bold mt-1">৳ {monthlyEarnings.toLocaleString()}</p>
                             </div>
                             <div className="bg-blue-100 p-2 rounded-lg text-blue-600">
                                 <FaMoneyBillWave className="h-6 w-6" />
@@ -118,7 +146,7 @@ const OverviewSection = ({ userData }) => {
                         <div className="flex justify-between">
                             <div>
                                 <h3 className="font-semibold text-gray-600">Active Jobs</h3>
-                                <p className="text-2xl font-bold mt-1"></p>
+                                <p className="text-2xl font-bold mt-1">{activeJobsCount}</p>
                             </div>
                             <div className="bg-green-100 p-2 rounded-lg text-green-600">
                                 <FaBriefcase className="h-6 w-6" />
@@ -137,7 +165,7 @@ const OverviewSection = ({ userData }) => {
                         <div className="flex justify-between">
                             <div>
                                 <h3 className="font-semibold text-gray-600">My Courses</h3>
-                                <p className="text-2xl font-bold mt-1"></p>
+                                <p className="text-2xl font-bold mt-1">{purchasedCoursesCount}</p>
                             </div>
                             <div className="bg-purple-100 p-2 rounded-lg text-purple-600">
                                 <FaBookOpen className="h-6 w-6" />
@@ -156,7 +184,7 @@ const OverviewSection = ({ userData }) => {
                         <div className="flex justify-between">
                             <div>
                                 <h3 className="font-semibold text-gray-600">Referrals</h3>
-                                <p className="text-2xl font-bold mt-1"></p>
+                                <p className="text-2xl font-bold mt-1">{referralsCount}</p>
                             </div>
                             <div className="bg-amber-100 p-2 rounded-lg text-amber-600">
                                 <FaUsers className="h-6 w-6" />
@@ -173,11 +201,7 @@ const OverviewSection = ({ userData }) => {
                         <button className="text-[#c5064f] text-sm font-medium">View All</button>
                     </div>
                     <div className="space-y-4">
-                        {[
-                            { id: 1, type: 'credit', amount: 450.00, description: 'Project Payment - Website Redesign', date: 'Today, 10:45 AM', status: 'completed' },
-                            { id: 2, type: 'debit', amount: 120.00, description: 'Withdrawal to Bank', date: 'Yesterday, 3:22 PM', status: 'completed' },
-                            { id: 3, type: 'credit', amount: 275.50, description: 'Project Payment - Mobile App', date: 'Jul 8, 2023', status: 'pending' }
-                        ].map(transaction => (
+                        {recentTransactions.map(transaction => (
                             <div key={transaction.id} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors">
                                 <div className="flex items-center gap-3">
                                     <div className={`p-2 rounded-full ${transaction.type === 'credit' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
@@ -198,7 +222,7 @@ const OverviewSection = ({ userData }) => {
                                 </div>
                                 <div className="text-right">
                                     <p className={`font-semibold ${transaction.type === 'credit' ? 'text-green-600' : 'text-red-600'}`}>
-                                        {transaction.type === 'credit' ? '+' : '-'}৳{transaction.amount.toFixed(2)}
+                                        {transaction.type === 'credit' ? '+' : '-'}৳{}
                                     </p>
                                     <span className={`text-xs px-2 py-1 rounded-full ${transaction.status === 'completed' ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600'}`}>
                                         {transaction.status}
@@ -265,25 +289,17 @@ const OverviewSection = ({ userData }) => {
                                 backgroundRepeat: "no-repeat",
                             }}
                         >
-                            {/* Arrow toggle */}
-                            {/* Global CSS for breathing animation */}
                             <style>{`
-                                        @keyframes breathe {
-                                        0%, 100% {
-                                            transform: scale(1);
-                                        }
-                                        50% {
-                                            transform: scale(1.17);
-                                        }
-                                        }
-                                        .animate-breathe {
-                                        animation: breathe 1s ease-in-out infinite;
-                                        }
-                                    `}</style>
-
+                                @keyframes breathe {
+                                    0%, 100% { transform: scale(1); }
+                                    50% { transform: scale(1.17); }
+                                }
+                                .animate-breathe {
+                                    animation: breathe 1s ease-in-out infinite;
+                                }
+                            `}</style>
 
                             <span className="absolute top-4 right-4 text-white">
-                                {/* Down Arrow */}
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="h-6 w-6 transition-transform duration-300 group-open:hidden animate-breathe"
@@ -294,7 +310,6 @@ const OverviewSection = ({ userData }) => {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                 </svg>
 
-                                {/* Up Arrow */}
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="h-6 w-6 transition-transform duration-300 hidden group-open:inline animate-breathe"
@@ -309,8 +324,8 @@ const OverviewSection = ({ userData }) => {
                             <p className="font-semibold text-lg">💰 Wallet Summary</p>
                             <div className="mt-2">
                                 <h3 className="font-medium opacity-90">Total Balance</h3>
-                                <p className="text-2xl font-bold my-1">৳ </p>
-                                <p className="text-sm opacity-80">Available: ৳ </p>
+                                <p className="text-2xl font-bold my-1">৳ {totalBalance.toLocaleString()}</p>
+                                <p className="text-sm opacity-80">Available: ৳ {availableBalance.toLocaleString()}</p>
                             </div>
                         </div>
                     </summary>
@@ -318,22 +333,23 @@ const OverviewSection = ({ userData }) => {
                         <div className="grid grid-cols-1 gap-2">
                             <div className="bg-white/10 p-2 rounded-lg">
                                 <p className="text-xs opacity-80">This Month</p>
-                                <p className="font-semibold">৳ </p>
+                                <p className="font-semibold">৳ {monthlyEarnings.toLocaleString()}</p>
                             </div>
                             <div className="bg-white/10 p-2 rounded-lg">
                                 <p className="text-xs opacity-80">Pending</p>
-                                <p className="font-semibold">৳ </p>
+                                <p className="font-semibold">৳ {pendingAmount.toLocaleString()}</p>
                             </div>
                             <div className="bg-white/10 p-2 rounded-lg">
                                 <p className="text-xs opacity-80">Withdrawn</p>
-                                <p className="font-semibold">৳ </p>
+                                <p className="font-semibold">৳ {withdrawnAmount.toLocaleString()}</p>
                             </div>
                         </div>
                         <div className="mt-4 grid grid-cols-2 gap-2">
                             {["deposit", "withdraw", "transfer", "history"].map(type => (
                                 <button
                                     key={type}
-                                    
+                                    onClick={() => handleWalletAction(type)}
+                                    className="flex items-center justify-center gap-1 px-3 py-2 bg-white/20 rounded-lg text-sm hover:bg-white/30 transition"
                                 >
                                     {type.charAt(0).toUpperCase() + type.slice(1)}
                                 </button>
@@ -344,36 +360,32 @@ const OverviewSection = ({ userData }) => {
 
                 {/* Stats Cards - Horizontal Scroll */}
                 <div className="flex gap-4 overflow-x-auto scrollbar-hide snap-x pb-2">
-                    {/* Each card: add min-width and snap */}
                     <div className="min-w-[220px] snap-start bg-white p-4 rounded-xl shadow border-l-4 border-blue-500">
                         <h3 className="font-semibold text-gray-600">Earnings</h3>
-                        <p className="text-xl font-bold mt-1">৳ </p>
+                        <p className="text-xl font-bold mt-1">৳ {monthlyEarnings.toLocaleString()}</p>
                     </div>
                     <div className="min-w-[220px] snap-start bg-white p-4 rounded-xl shadow border-l-4 border-green-500">
                         <h3 className="font-semibold text-gray-600">Jobs</h3>
-                        <p className="text-xl font-bold mt-1"></p>
+                        <p className="text-xl font-bold mt-1">{activeJobsCount}</p>
                     </div>
                     <div className="min-w-[220px] snap-start bg-white p-4 rounded-xl shadow border-l-4 border-purple-500">
                         <h3 className="font-semibold text-gray-600">Courses</h3>
-                        <p className="text-xl font-bold mt-1"></p>
+                        <p className="text-xl font-bold mt-1">{purchasedCoursesCount}</p>
                     </div>
                     <div className="min-w-[220px] snap-start bg-white p-4 rounded-xl shadow border-l-4 border-amber-500">
                         <h3 className="font-semibold text-gray-600">Referrals</h3>
-                        <p className="text-xl font-bold mt-1"></p>
+                        <p className="text-xl font-bold mt-1">{referralsCount}</p>
                     </div>
                 </div>
 
                 {/* Transactions - 2 Preview */}
                 <div className="bg-white p-4 rounded-xl shadow">
                     <h3 className="font-bold text-md mb-3">Recent Transactions</h3>
-                    {[...[
-                        { id: 1, type: 'credit', amount: 450.00, description: 'Project Payment', date: 'Today', status: 'completed' },
-                        { id: 2, type: 'debit', amount: 120.00, description: 'Withdraw', date: 'Yesterday', status: 'completed' }
-                    ]].map(tx => (
+                    {recentTransactions.slice(0, 2).map(tx => (
                         <div key={tx.id} className="flex justify-between items-center py-2 border-b">
                             <div>
-                                <p className="font-medium">{tx.description}</p>
-                                <p className="text-xs text-gray-500">{tx.date}</p>
+                                <p className="font-medium">{tx.description.split('-')[0].trim()}</p>
+                                <p className="text-xs text-gray-500">{tx.date.split(',')[0]}</p>
                             </div>
                             <div className={`font-semibold ${tx.type === 'credit' ? 'text-green-600' : 'text-red-600'}`}>
                                 {tx.type === 'credit' ? '+' : '-'}৳{tx.amount.toFixed(2)}

@@ -34,11 +34,14 @@ const ActiveJobReport = () => {
     const remainingAmount = totalAmount - (giveAmount * (reportedJob?.unitPrice || 0));
 
     useEffect(() => {
+        let intervalId;
+
         const fetchJobs = async () => {
             try {
                 const res = await axios.get("https://bijoy-server.vercel.app/api/active-jobs");
                 if (res.data.success) {
                     setJobs(res.data.data);
+                    setError(null);
                 } else {
                     setError(res.data.message || "Something went wrong");
                 }
@@ -49,8 +52,16 @@ const ActiveJobReport = () => {
             }
         };
 
+        // initial fetch
         fetchJobs();
+
+        // set interval to auto-refresh
+        intervalId = setInterval(fetchJobs, 10000); // every 10 seconds
+
+        // cleanup on unmount
+        return () => clearInterval(intervalId);
     }, []);
+
 
     useEffect(() => {
         const fetchUserDetails = async () => {
@@ -481,7 +492,7 @@ const ActiveJobReport = () => {
     if (error) return <p className="text-center text-red-500 py-10">{error}</p>;
 
     return (
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 pt-16 py-6">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold text-gray-800">Active Job Report</h1>
                 {removedJobIds.length > 0 && (

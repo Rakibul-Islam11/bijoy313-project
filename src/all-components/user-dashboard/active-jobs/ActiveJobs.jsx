@@ -12,8 +12,8 @@ const allJobs = [
         id: "instagram",
         name: "ইনস্টাগ্রাম মার্কেটিং",
         logo: insta,
-        price: "৳2",
-        priceValue: 2,
+        price: "৳3",
+        priceValue: 3,
         badge: "Popular",
         detailsPath: "/active-jobs/instagram",
         rating: 4.8
@@ -22,8 +22,8 @@ const allJobs = [
         id: "gmail",
         name: "জিমেইল মার্কেটিং",
         logo: gmail,
-        price: "৳5",
-        priceValue: 5,
+        price: "৳8",
+        priceValue: 8,
         badge: "Trending",
         detailsPath: "/active-jobs/gmail",
         rating: 4.5
@@ -32,8 +32,8 @@ const allJobs = [
         id: "whatsapp",
         name: "হোয়াটসঅ্যাপ মার্কেটিং",
         logo: whatsapp,
-        price: "৳1",
-        priceValue: 8,
+        price: "৳20",
+        priceValue: 20,
         badge: "Popular",
         detailsPath: "/active-jobs/whatsapp",
         rating: 4.7
@@ -42,8 +42,8 @@ const allJobs = [
         id: "facebook",
         name: "ফেসবুক মার্কেটিং",
         logo: facebook,
-        price: "৳5",
-        priceValue: 6,
+        price: "৳8",
+        priceValue: 8,
         badge: "Trending",
         detailsPath: "/active-jobs/facebook",
         rating: 4.9

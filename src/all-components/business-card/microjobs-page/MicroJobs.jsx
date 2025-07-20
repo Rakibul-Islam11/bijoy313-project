@@ -93,7 +93,7 @@ const MicroJobs = () => {
     };
 
     return (
-        <div className="flex flex-col lg:flex-row bg-gradient-to-br from-gray-50 to-indigo-50 min-h-screen text-gray-800 relative">
+        <div className="flex flex-col lg:flex-row bg-gradient-to-br from-gray-50 to-indigo-50 min-h-screen text-gray-800 relative mt-[60px]">
             {/* Left Sidebar */}
             <aside className="w-72 bg-gradient-to-b from-white/95 to-indigo-50/30 backdrop-blur-xl p-6 hidden lg:block lg:fixed lg:h-screen z-30 shadow-2xl border-r border-white/30">
                 {/* Brand Area */}
