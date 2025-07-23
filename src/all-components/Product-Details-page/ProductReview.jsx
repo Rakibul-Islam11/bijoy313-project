@@ -232,11 +232,11 @@ const ProductReview = ({ productId }) => {
 
     return (
         <div>
-            <div className='text-black'><hr /></div>
+            <div className='text-black'></div>
             <div className="max-w-4xl mx-auto py-8 px-4">
 
                 <h2 className="text-2xl font-bold text-gray-800 mb-1">Customer Reviews</h2>
-                <div className='text-gray-300 mb-6'><hr /></div>
+                <div className='text-gray-300 mb-6'></div>
 
                 {user ? (
                     <form onSubmit={handleSubmit} className="mb-8 bg-white rounded-lg shadow-md p-6">

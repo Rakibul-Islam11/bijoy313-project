@@ -14,16 +14,47 @@ const MySwal = withReactContent(Swal);
 
 const FacebookMarketingDetails = () => {
     const { user, loading } = useContext(authContext);
+    
     const { totalBalance } = useContext(activeJobContext);
+    const [jobData, setJobData] = useState({
+        price: 0, // Default price
+    });
+    const [error, setError] = useState(null);
     const [quantity, setQuantity] = useState(1);
-    const unitPrice = 8;
+    const unitPrice = jobData.price;
     const totalPrice = (quantity * unitPrice).toFixed(2);
     const [note, setNote] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [userProfile, setUserProfile] = useState(null);
     const [showEarningLimitAlert, setShowEarningLimitAlert] = useState(false);
     const navigate = useNavigate();
+    
+    useEffect(() => {
+        const fetchJobData = () => {
+            axios
+                .get('https://bijoy-server.vercel.app/api/active-job-update/facebook-marketing')
+                .then(res => {
+                    if (res.data.success) {
+                        setJobData(res.data.data);
+                        setError(null); // Reset error if success
+                    } else {
+                        setError(res.data.message);
+                    }
+                })
+                .catch(err => {
+                    setError(err.message);
+                });
+        };
 
+        // Initial fetch
+        fetchJobData();
+
+        // Set interval to refetch every 5 seconds
+        const interval = setInterval(fetchJobData, 2000);
+
+        // Cleanup on component unmount
+        return () => clearInterval(interval);
+    }, []);
     const fetchUserData = async () => {
         if (user) {
             try {
@@ -155,7 +186,7 @@ const FacebookMarketingDetails = () => {
             setIsSubmitting(false);
         }
     };
-
+    if (error) return <div className="text-red-500">{error}</div>;
     return (
         <div className="min-h-screen mt-15 bg-gradient-to-br from-blue-900 via-indigo-900 to-violet-900 p-4 md:p-8 text-white flex justify-center items-center">
             {/* Back Button */}
@@ -365,21 +396,7 @@ const FacebookMarketingDetails = () => {
                             </div>
 
                             <ul className="space-y-5 text-white/80">
-                                {[
-                                    "ফেসবুক আইডি তৈরি করে জমা দিলে প্রতি আইডিতে ৳৩৫ পাবেন",
-                                    "আইডি অবশ্যই একটিভ এবং ভেরিফাইড হতে হবে (ভেরিফাইড না হলে গ্রহণযোগ্য হবে না)",
-                                    "প্রতিদিন সর্বোচ্চ ২৫টি আইডি জমা দিতে পারবেন (প্রতিটি আইডি আলাদা আলাদা নম্বর হতে হবে)",
-                                    "পেমেন্ট ২৪ ঘন্টার মধ্যে হোয়াটসঅ্যাপ নম্বরে পাঠিয়ে দেওয়া হবে",
-                                    "কাজের কোয়ালিটি চেক করার পরেই পেমেন্ট করা হবে (স্প্যাম/ফেক আইডি গ্রহণযোগ্য নয়)",
-                                    "কোনো সমস্যা হলে হোয়াটসঅ্যাপে যোগাযোগ করুন (২৪/৭ সাপোর্ট)"
-                                ].map((item, index) => (
-                                    <li key={index} className="flex items-start gap-4">
-                                        <div className="w-7 h-7 bg-gradient-to-br from-indigo-400/80 to-violet-500/80 rounded-full flex items-center justify-center flex-shrink-0 mt-1 border border-white/10 shadow-sm">
-                                            <div className="w-2 h-2 bg-white rounded-full"></div>
-                                        </div>
-                                        <span className="flex-1">{item}</span>
-                                    </li>
-                                ))}
+                                {jobData.description}
                             </ul>
 
                             {/* Trust Badges */}

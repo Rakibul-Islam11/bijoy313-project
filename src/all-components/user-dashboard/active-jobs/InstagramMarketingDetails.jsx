@@ -15,8 +15,12 @@ const MySwal = withReactContent(Swal);
 const InstagramMarketingDetails = () => {
     const { user, loading: authLoading } = useContext(authContext);
     const { totalBalance } = useContext(activeJobContext);
+    const [jobData, setJobData] = useState({
+            price: 0, // Default price
+        });
+        const [error, setError] = useState(null);
     const [quantity, setQuantity] = useState(1);
-    const unitPrice = 3;
+    const unitPrice = jobData.price;
     const totalPrice = (quantity * unitPrice).toFixed(2);
     const [note, setNote] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -25,6 +29,32 @@ const InstagramMarketingDetails = () => {
     const [showEarningLimitAlert, setShowEarningLimitAlert] = useState(false);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const fetchJobData = () => {
+            axios
+                .get('https://bijoy-server.vercel.app/api/active-job-update/instagram-marketing')
+                .then(res => {
+                    if (res.data.success) {
+                        setJobData(res.data.data);
+                        setError(null); // Reset error if success
+                    } else {
+                        setError(res.data.message);
+                    }
+                })
+                .catch(err => {
+                    setError(err.message);
+                });
+        };
+
+        // Initial fetch
+        fetchJobData();
+
+        // Set interval to refetch every 5 seconds
+        const interval = setInterval(fetchJobData, 2000);
+
+        // Cleanup on component unmount
+        return () => clearInterval(interval);
+    }, []);
     const showEarningLimitWarning = useCallback(() => {
         MySwal.fire({
             icon: 'info',
@@ -49,19 +79,16 @@ const InstagramMarketingDetails = () => {
     }, [navigate]);
 
     const fetchUserData = useCallback(async () => {
-        if (!user) return;
+        if (!user) {
+            setProfileLoading(false);
+            return;
+        }
 
         try {
             const response = await axios.get(`https://bijoy-server.vercel.app/users/by-uid/${user.uid}`);
 
             if (response.data.success) {
-                setUserProfile(prev => {
-                    // Only update if payment status changed
-                    if (!prev || prev.payment !== response.data.user.payment) {
-                        return response.data.user;
-                    }
-                    return prev;
-                });
+                setUserProfile(response.data.user);
 
                 // Check if user has crossed earning limit and not paid
                 if (totalBalance >= 200 && response.data.user.payment === "unpaid" && !showEarningLimitAlert) {
@@ -78,18 +105,13 @@ const InstagramMarketingDetails = () => {
 
     useEffect(() => {
         if (!authLoading) {
-            fetchUserData(); // Initial load
-
-            // Set up interval with cleanup (30 seconds interval)
-            const interval = setInterval(fetchUserData, 1000);
-            return () => clearInterval(interval);
+            fetchUserData();
         }
     }, [authLoading, fetchUserData]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Check if user is logged in
         if (!user) {
             MySwal.fire({
                 icon: 'error',
@@ -100,13 +122,11 @@ const InstagramMarketingDetails = () => {
             return;
         }
 
-        // Check if user has crossed earning limit (200) and is unpaid
         if (totalBalance >= 200 && userProfile?.payment === "unpaid") {
             showEarningLimitWarning();
             return;
         }
 
-        // If user is submitting beyond free limit, check payment status
         if (totalBalance >= 200 && userProfile?.payment !== "paid") {
             MySwal.fire({
                 icon: 'info',
@@ -120,11 +140,9 @@ const InstagramMarketingDetails = () => {
                     navigate('/verify-alert');
                 }
             });
-            
             return;
         }
 
-        // If everything is okay, proceed with submission
         setIsSubmitting(true);
 
         try {
@@ -167,7 +185,8 @@ const InstagramMarketingDetails = () => {
         }
     };
 
-    if (authLoading || profileLoading) {
+    // Only show loading if auth is still loading or profile is loading AND we have no user data yet
+    if (authLoading || (profileLoading && user)) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900">
                 <div className="text-white text-center">
@@ -177,7 +196,7 @@ const InstagramMarketingDetails = () => {
             </div>
         );
     }
-
+    if (error) return <div className="text-red-500">{error}</div>;
     return (
         <div className="min-h-screen mt-15 bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 p-4 md:p-8 text-white flex justify-center items-center">
             {/* Back Button */}
@@ -388,21 +407,7 @@ const InstagramMarketingDetails = () => {
                             </div>
 
                             <ul className="space-y-5 text-white/80">
-                                {[
-                                    "ইনস্টাগ্রাম আইডি তৈরি করে জমা দিলে প্রতি আইডিতে ৳২০ পাবেন",
-                                    "আইডি অবশ্যই একটিভ এবং ভেরিফাইড হতে হবে (ভেরিফাইড না হলে গ্রহণযোগ্য হবে না)",
-                                    "প্রতিদিন সর্বোচ্চ ১০টি আইডি জমা দিতে পারবেন (প্রতিটি আইডি আলাদা আলাদা নম্বর হতে হবে)",
-                                    "পেমেন্ট ২৪ ঘন্টার মধ্যে হোয়াটসঅ্যাপ নম্বরে পাঠিয়ে দেওয়া হবে",
-                                    "কাজের কোয়ালিটি চেক করার পরেই পেমেন্ট করা হবে (স্প্যাম/ফেক আইডি গ্রহণযোগ্য নয়)",
-                                    "কোনো সমস্যা হলে হোয়াটসঅ্যাপে যোগাযোগ করুন (২৪/৭ সাপোর্ট)"
-                                ].map((item, index) => (
-                                    <li key={index} className="flex items-start gap-4">
-                                        <div className="w-7 h-7 bg-gradient-to-br from-blue-400/80 to-indigo-500/80 rounded-full flex items-center justify-center flex-shrink-0 mt-1 border border-white/10 shadow-sm">
-                                            <div className="w-2 h-2 bg-white rounded-full"></div>
-                                        </div>
-                                        <span className="flex-1">{item}</span>
-                                    </li>
-                                ))}
+                                {jobData.description}
                             </ul>
 
                             {/* Trust Badges */}

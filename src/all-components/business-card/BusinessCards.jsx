@@ -33,9 +33,9 @@ const services = [
         color: 'from-pink-400 to-pink-600'
     },
     {
-        title: 'কমিউনিটি',
+        title: 'এক্সট্রা ইনকাম',
         icon: <FiUsers />,
-        url: '#community',
+        url: '/income-with-bijoy',
         color: 'from-lime-400 to-lime-600'
     },
     {

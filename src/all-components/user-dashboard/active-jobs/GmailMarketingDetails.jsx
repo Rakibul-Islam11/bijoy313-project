@@ -13,10 +13,14 @@ import { activeJobContext } from "../../all-contexts/ActiveJobContext";
 const MySwal = withReactContent(Swal);
 
 const GmailMarketingDetails = () => {
-    const { user, loading } = useContext(authContext);
+    const { user, loading: authLoading } = useContext(authContext);
     const { totalBalance } = useContext(activeJobContext);
+    const [jobData, setJobData] = useState({
+        price: 0, // Default price
+    });
+    const [error, setError] = useState(null);
     const [quantity, setQuantity] = useState(1);
-    const unitPrice = 8;
+    const unitPrice = jobData.price;
     const totalPrice = (quantity * unitPrice).toFixed(2);
     const [note, setNote] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,6 +30,32 @@ const GmailMarketingDetails = () => {
     const navigate = useNavigate();
     const intervalRef = useRef(null);
 
+     useEffect(() => {
+            const fetchJobData = () => {
+                axios
+                    .get('https://bijoy-server.vercel.app/api/active-job-update/gmail-marketing')
+                    .then(res => {
+                        if (res.data.success) {
+                            setJobData(res.data.data);
+                            setError(null); // Reset error if success
+                        } else {
+                            setError(res.data.message);
+                        }
+                    })
+                    .catch(err => {
+                        setError(err.message);
+                    });
+            };
+    
+            // Initial fetch
+            fetchJobData();
+    
+            // Set interval to refetch every 5 seconds
+            const interval = setInterval(fetchJobData, 2000);
+    
+            // Cleanup on component unmount
+            return () => clearInterval(interval);
+        }, []);
     const showEarningLimitWarning = () => {
         MySwal.fire({
             icon: 'info',
@@ -50,19 +80,15 @@ const GmailMarketingDetails = () => {
     };
 
     const fetchUserData = async () => {
-        if (!user) return;
+        if (!user) {
+            setProfileLoading(false);
+            return;
+        }
 
         try {
             const response = await axios.get(`https://bijoy-server.vercel.app/users/by-uid/${user.uid}`);
-
             if (response.data.success) {
-                setUserProfile(prev => {
-                    if (JSON.stringify(prev) !== JSON.stringify(response.data.user)) {
-                        return response.data.user;
-                    }
-                    return prev;
-                });
-
+                setUserProfile(response.data.user);
                 if (totalBalance >= 200 && response.data.user.payment === "unpaid" && !showEarningLimitAlert) {
                     setShowEarningLimitAlert(true);
                     showEarningLimitWarning();
@@ -70,34 +96,23 @@ const GmailMarketingDetails = () => {
             }
         } catch (error) {
             console.error('Error fetching user data:', error);
-            if (!intervalRef.current) {
-                MySwal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Failed to load user profile'
-                });
-            }
         } finally {
-            if (profileLoading) {
-                setProfileLoading(false);
-            }
+            setProfileLoading(false);
         }
     };
 
     useEffect(() => {
-        if (!loading) {
+        if (!authLoading) {
             fetchUserData();
-
             intervalRef.current = setInterval(fetchUserData, 3000);
-
-            return () => {
-                if (intervalRef.current) {
-                    clearInterval(intervalRef.current);
-                    intervalRef.current = null;
-                }
-            };
         }
-    }, [user, loading]);
+
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
+    }, [authLoading, user]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -137,7 +152,6 @@ const GmailMarketingDetails = () => {
 
         try {
             const token = await user.getIdToken();
-
             const jobData = {
                 quantity,
                 note,
@@ -174,8 +188,8 @@ const GmailMarketingDetails = () => {
             setIsSubmitting(false);
         }
     };
-
-    if (profileLoading) {
+    if (error) return <div className="text-red-500">{error}</div>;
+    if (authLoading || (profileLoading && user)) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-900 via-orange-900 to-amber-900">
                 <div className="text-white text-center">
@@ -188,10 +202,7 @@ const GmailMarketingDetails = () => {
 
     return (
         <div className="min-h-screen mt-15 bg-gradient-to-br from-red-900 via-orange-900 to-amber-900 p-4 md:p-8 text-white flex justify-center items-center">
-            <Link
-                to="/active-jobs"
-                className="absolute top-18 left-2 z-50 group"
-            >
+            <Link to="/active-jobs" className="absolute top-18 left-2 z-50 group">
                 <div className="relative inline-flex items-center px-2 md:px-4 py-1 md:py-2 bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-xl shadow-lg transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div className="absolute -inset-1 bg-gradient-to-br from-blue-400/40 to-indigo-400/40 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -382,21 +393,7 @@ const GmailMarketingDetails = () => {
                             </div>
 
                             <ul className="space-y-5 text-white/80">
-                                {[
-                                    "জিমেইল আইডি তৈরি করে জমা দিলে প্রতি আইডিতে ৳৩০ পাবেন",
-                                    "আইডি অবশ্যই একটিভ এবং ভেরিফাইড হতে হবে (ভেরিফাইড না হলে গ্রহণযোগ্য হবে না)",
-                                    "প্রতিদিন সর্বোচ্চ ২০টি আইডি জমা দিতে পারবেন (প্রতিটি আইডি আলাদা আলাদা নম্বর হতে হবে)",
-                                    "পেমেন্ট ২৪ ঘন্টার মধ্যে হোয়াটসঅ্যাপ নম্বরে পাঠিয়ে দেওয়া হবে",
-                                    "কাজের কোয়ালিটি চেক করার পরেই পেমেন্ট করা হবে (স্প্যাম/ফেক আইডি গ্রহণযোগ্য নয়)",
-                                    "কোনো সমস্যা হলে হোয়াটসঅ্যাপে যোগাযোগ করুন (২৪/৭ সাপোর্ট)"
-                                ].map((item, index) => (
-                                    <li key={index} className="flex items-start gap-4">
-                                        <div className="w-7 h-7 bg-gradient-to-br from-orange-400/80 to-amber-500/80 rounded-full flex items-center justify-center flex-shrink-0 mt-1 border border-white/10 shadow-sm">
-                                            <div className="w-2 h-2 bg-white rounded-full"></div>
-                                        </div>
-                                        <span className="flex-1">{item}</span>
-                                    </li>
-                                ))}
+                                {jobData.description}
                             </ul>
 
                             <div className="mt-10 pt-6 border-t border-white/10 grid grid-cols-2 gap-4">

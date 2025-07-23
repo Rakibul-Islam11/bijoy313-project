@@ -34,7 +34,6 @@ const ProductDetailsAditional = ({ productId }) => {
         <div>
             <div className="mb-6 mt-10 md:mt-15">
                 <div className="text-black">
-                    <hr />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-2 mt-4">বিবরণ</h3>
                 <p className="text-gray-600">{product.description || "এই পণ্যটি সম্পর্কে বিস্তারিত বিবরণ দেওয়া হয়নি।"}</p>

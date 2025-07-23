@@ -47,6 +47,14 @@ import VerifyMemberManual from './all-components/admin-all-pages/VerifyMemberMan
 import GetWork from './all-components/admin-all-pages/GetWork.jsx';
 import BalanceShow from './all-components/admin-all-pages/BalanceShow.jsx';
 import MakePaidUser from './all-components/admin-all-pages/MakePaidUser.jsx';
+import ClientDashboard from './all-components/user-dashboard/ClientDashboard.jsx';
+import IncomeWithBijoy from './all-components/income-with-bijoy-page/IncomeWithBijoy.jsx';
+import GetUserInfo from './all-components/all-contexts/GetUserInfoContext.jsx';
+import GrahokChannel from './all-components/income-with-bijoy-page/GrahokChannel.jsx';
+import Deemo from './all-components/user-dashboard/active-jobs/Deemo.jsx';
+import DemoOne from './all-components/admin-all-pages/DemoOne.jsx';
+import DemoTwo from './all-components/admin-all-pages/DemoTwo.jsx';
+import DemoThree from './all-components/admin-all-pages/DemoThree.jsx';
 
 
 const routes = createBrowserRouter([
@@ -187,7 +195,26 @@ const routes = createBrowserRouter([
         path: '/bal',
         element: <BalanceShow></BalanceShow>
       },
-
+      {
+        path: '/client-dashboard',
+        element: <ClientDashboard></ClientDashboard>
+      },
+      {
+        path: '/income-with-bijoy',
+        element: <IncomeWithBijoy></IncomeWithBijoy>
+      },
+      {
+        path: '/deemo',
+        element: <Deemo></Deemo>
+      },
+      {
+        path: "/demo",
+        element: <Demo></Demo>
+      },
+      {
+        path: '/grahol-chaneel',
+        element: <GrahokChannel></GrahokChannel>
+      },
       // In your main routes configuration
       {
         path: '/admin-panel',
@@ -221,7 +248,20 @@ const routes = createBrowserRouter([
           {
             path: 'make-paid-user',
             element: <MakePaidUser></MakePaidUser>
+          },
+          {
+            path: '/admin-panel/active-jobs-update/demo1',
+            element: <DemoOne />
+          },
+          {
+            path: '/admin-panel/active-jobs-update/demo2',
+            element: <DemoTwo />
+          },
+          {
+            path: '/admin-panel/active-jobs-update/demo3',
+            element: <DemoThree />
           }
+          
 
         ]
       }
@@ -234,13 +274,15 @@ const routes = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthContextProvider>
-      <ActiveJobProvider>
-        <MobileMenuProvider>
+      <GetUserInfo>
+        <ActiveJobProvider>
+          <MobileMenuProvider>
 
-          <RouterProvider router={routes} />
+            <RouterProvider router={routes} />
 
-        </MobileMenuProvider>
-      </ActiveJobProvider>
+          </MobileMenuProvider>
+        </ActiveJobProvider>
+      </GetUserInfo>
     </AuthContextProvider>
   </StrictMode>
 );

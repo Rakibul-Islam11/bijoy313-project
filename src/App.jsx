@@ -19,7 +19,7 @@ function App() {
         localStorage.setItem('verifyAlertShown', 'true');
       }, 2000);
 
-      return () => clearTimeout(timer); // Cleanup
+      return () => clearTimeout(timer);
     }
   }, []);
 
@@ -37,16 +37,8 @@ function App() {
       </div>
 
       {showAlert && (
-        <div className="fixed inset-0 z-50 px-10 bg-opacity-50 flex items-center justify-center">
-          <div className="relative  rounded-lg shadow-xl ">
-            <button
-              onClick={closeAlert}
-              className="absolute top-8 md:top-10 right-2 text-white hover:text-red-500 text-4xl"
-            >
-              &times;
-            </button>
-            <VerifyAlertPage />
-          </div>
+        <div className="fixed inset-0 z-[999]  bg-opacity-50 flex items-center justify-center p-4">
+          <VerifyAlertPage onClose={closeAlert} />
         </div>
       )}
     </>

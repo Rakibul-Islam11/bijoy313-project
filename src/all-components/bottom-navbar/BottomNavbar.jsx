@@ -21,7 +21,7 @@ const BottomNavbar = () => {
         { icon: FaHome, text: "Home", path: "/home" },
         { icon: FaHandshake, text: "Services", path: "/services" },
         { icon: FaShoppingBag, text: "Products", path: "/all-products", isCentral: true },
-        { icon: FaMoneyBillWave, text: "Earn", path: "/earn" },
+        { icon: FaMoneyBillWave, text: "Earn", path: "/income-with-bijoy" },
         { icon: user ? FaUser : FaUserPlus, text: user ? "Dashboard" : "Join", path: user ? "/dashboard" : "/pop-up-sign" }
     ];
 

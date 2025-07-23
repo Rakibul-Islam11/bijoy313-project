@@ -14,7 +14,8 @@ const ActiveJobProvider = ({ children }) => {
     const [error, setError] = useState("");
     const [totalBalance, setTotalBalance] = useState(0);
     const [balanceState, setBalanceState] = useState(null);
-console.log(totalBalance);
+
+
 
     // প্রথম‑বার লোডার দেখানোর জন্য:
     const initialLoad = useRef(true);
@@ -38,7 +39,7 @@ console.log(totalBalance);
 
             fetchJobHistory(); // Initial call
 
-            interval = setInterval(fetchJobHistory, 2000); // Fetch every 2 seconds
+            interval = setInterval(fetchJobHistory, 5000); // Fetch every 2 seconds
         }
 
         return () => clearInterval(interval); // Clean up interval on unmount
@@ -116,12 +117,13 @@ console.log(totalBalance);
     }, [user?.uid, loading]);
     // fallback
     const balance = balanceState?.balance ?? 0;
-    
+
 
     const serveData = {
         jobHistoryReport,
         totalBalance, //active jobs tottal earn
-        balance //all balance of user
+        balance, //all balance of user
+
     };
     return (
         <activeJobContext.Provider value={serveData}>

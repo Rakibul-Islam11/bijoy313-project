@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const Demo = () => {
+const DemoOne = () => {
     const [jobs, setJobs] = useState([]);
     const [selectedJobId, setSelectedJobId] = useState('');
     const [formData, setFormData] = useState({ price: '', description: '', work: '' });
@@ -38,7 +38,7 @@ const Demo = () => {
     };
 
     return (
-        <div className="p-4 max-w-md mx-auto mt-15">
+        <div className="p-4 max-w-md mx-auto mt-5 md:mt-10">
             <h2 className="text-xl font-semibold mb-4">Update Job Info</h2>
 
             <select className="border p-2 w-full mb-4" onChange={handleSelectChange} defaultValue="">
@@ -89,4 +89,4 @@ const Demo = () => {
     );
 };
 
-export default Demo;
+export default DemoOne;

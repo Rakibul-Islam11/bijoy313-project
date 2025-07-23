@@ -37,6 +37,33 @@ const SignInUp = () => {
         return re.test(email);
     };
 
+    const validateBangladeshiPhone = (phoneNumber) => {
+        // Remove all non-digit characters
+        const digitsOnly = phoneNumber.replace(/\D/g, '');
+
+        // Check if it's a Bangladeshi number (+880)
+        if (digitsOnly.startsWith('880')) {
+            // Check if the number after country code starts with 0 (invalid case)
+            if (digitsOnly.length > 3 && digitsOnly[3] === '0') {
+                return false;
+            }
+
+            // Check if the number has the correct length (11 digits including country code)
+            if (digitsOnly.length !== 13) {
+                return false;
+            }
+
+            // Check if the operator code is valid (1, 5, 6, 7, 8, 9)
+            const operatorCode = digitsOnly[3];
+            const validOperators = ['1', '5', '6', '7', '8', '9'];
+            if (!validOperators.includes(operatorCode)) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -54,10 +81,22 @@ const SignInUp = () => {
 
     const handlePhoneChange = (value, country) => {
         setPhone(value);
+
+        // Format the phone number with + sign
+        const formattedPhone = `+${value}`;
+
         setFormData({
             ...formData,
-            phone: `+${value}`
+            phone: formattedPhone
         });
+
+        // Clear any existing phone error when changing
+        if (errors.phone) {
+            setErrors({
+                ...errors,
+                phone: ''
+            });
+        }
     };
 
     const validateForm = () => {
@@ -91,9 +130,29 @@ const SignInUp = () => {
         if (!phone) {
             newErrors.phone = 'Phone number is required';
             valid = false;
-        } else if (phone.length < 5) {
-            newErrors.phone = 'Please enter a valid phone number';
-            valid = false;
+        } else {
+            // Validate Bangladeshi phone number format
+            if (phone.startsWith('880')) {
+                // Check for extra leading zero
+                if (phone.length > 3 && phone[3] === '0') {
+                    newErrors.phone = 'Invalid Bangladeshi number. Remove the extra 0 after +880';
+                    valid = false;
+                }
+
+                // Check total length (880 + 10 digits = 13)
+                if (phone.length !== 13) {
+                    newErrors.phone = 'Bangladeshi numbers must be 11 digits total (+8801XXXXXXXXX)';
+                    valid = false;
+                }
+
+                // Check operator code
+                const operatorCode = phone.length > 3 ? phone[3] : '';
+                const validOperators = ['1', '5', '6', '7', '8', '9'];
+                if (!validOperators.includes(operatorCode)) {
+                    newErrors.phone = 'Invalid operator code. Must start with +8801, +8805, +8806, +8807, +8808, or +8809';
+                    valid = false;
+                }
+            }
         }
 
         if (userType === 'freelancer' && formData.referCode && formData.referCode.length < 9) {
@@ -158,6 +217,19 @@ const SignInUp = () => {
             setIsLoading(true);
 
             try {
+                // Additional validation for Bangladeshi numbers
+                if (formData.phone.startsWith('+880') && formData.phone.length !== 14) {
+                    throw {
+                        response: {
+                            status: 400,
+                            data: {
+                                field: 'phone',
+                                message: 'Bangladeshi numbers must be 11 digits total (+8801XXXXXXXXX)'
+                            }
+                        }
+                    };
+                }
+
                 const checkPhoneResponse = await axios.post('https://bijoy-server.vercel.app/users/check-phone', {
                     phone: formData.phone
                 });
@@ -218,13 +290,11 @@ const SignInUp = () => {
                 };
 
                 await saveUserToDatabase(userData);
-                // ✅ Create wallet in MongoDB
                 await axios.post('https://bijoy-server.vercel.app/api/create-wallet', {
                     uid: user.uid
                 });
                 await updateUserProfile(formData.name, "https://i.ibb.co/6cJ5ggMC/user-icon-on-transparent-background-free-png.webp", referralCode);
 
-                // Redirect to verification page with state
                 navigate('/verification-pop', {
                     state: {
                         verificationEmail: formData.email,
@@ -257,8 +327,8 @@ const SignInUp = () => {
                     if (field === 'phone') {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Phone Number Already Used',
-                            text: 'The phone number you entered is already associated with another account. Please use a different phone number.',
+                            title: 'Phone Number Error',
+                            text: message || 'The phone number you entered is invalid or already in use',
                         });
                     } else if (field === 'email') {
                         Swal.fire({
@@ -351,7 +421,7 @@ const SignInUp = () => {
                                 <div>
                                     <div className="flex flex-row items-center">
                                         <label className="block mb-1 text-gray-700">E-Mail*</label>
-                                        {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+                                        
                                     </div>
 
                                     <input
@@ -394,6 +464,8 @@ const SignInUp = () => {
                                             color: 'gray'
                                         }}
                                     />
+                                    {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+                                    <p className="text-xs text-gray-500 mt-1">Format: +8801XXXXXXXXX (without extra 0)</p>
                                 </div>
 
                                 <div className="relative">

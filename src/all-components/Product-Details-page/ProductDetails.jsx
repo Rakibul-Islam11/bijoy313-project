@@ -55,7 +55,9 @@ const ProductDetails = () => {
     const navigate = useNavigate();
     const shareUrl = window.location.href;
     const title = product?.productName || 'Check out this product';
+    const [activeTab, setActiveTab] = useState("productDetails");
 
+    
     useEffect(() => {
         const fetchReviews = async () => {
             if (!productId) return;
@@ -472,7 +474,7 @@ const ProductDetails = () => {
     }
 
     return (
-        <div className="bg-gray-50 min-h-screen">
+        <div className="bg-gray-50 min-h-screen mt-14">
             <ToastContainer
                 position="top-right"
                 autoClose={3000}
@@ -858,8 +860,43 @@ const ProductDetails = () => {
                     </div>
                 </div>
 
-                <ProductDetailsAditional productId={productId} />
-                <ProductReview productId={productId}></ProductReview>
+                {/* Tab Navigation */}
+                <div className="border-b border-gray-300 mt-10">
+                    <nav className="flex space-x-4 text-sm sm:text-base font-medium text-gray-700">
+                        <button
+                            onClick={() => setActiveTab("productDetails")}
+                            className={`relative py-2 px-4 ${activeTab === "productDetails" ? "border-b-2 border-blue-500 text-blue-600" : "hover:text-blue-500"}`}
+                        >
+                            Product details
+                        </button>
+
+                        <button
+                            onClick={() => setActiveTab("reviews")}
+                            className={`relative py-2 px-4 ${activeTab === "reviews" ? "border-b-2 border-blue-500 text-blue-600" : "hover:text-blue-500"}`}
+                        >
+                            Reviews
+                            {/* Badge */}
+                            {totalReviews > 0 && (
+                                <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full transition-all duration-300">
+                                    {totalReviews}
+                                </span>
+
+                            )}
+                        </button>
+                    </nav>
+                </div>
+
+
+                {/* Tab Content */}
+                <div className="mt-6">
+                    {activeTab === "productDetails" && (
+                        <ProductDetailsAditional productId={productId} />
+                    )}
+                    {activeTab === "reviews" && (
+                        <ProductReview productId={productId} />
+                    )}
+                </div>
+
             </div>
         </div>
     );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaBookmark, FaSearch, FaStar, FaArrowLeft, FaHistory } from "react-icons/fa";
 import { MdTrendingUp } from "react-icons/md";
@@ -6,53 +6,60 @@ import insta from '../../../assets/active-job-img/pngwing.com.png';
 import gmail from '../../../assets/active-job-img/pngwing.com (3).png';
 import facebook from '../../../assets/active-job-img/pngwing.com (1).png';
 import whatsapp from '../../../assets/active-job-img/pngwing.com (2).png';
+import axios from "axios";
+import { activeJobContext } from "../../all-contexts/ActiveJobContext";
 
-const allJobs = [
-    {
-        id: "instagram",
-        name: "ইনস্টাগ্রাম মার্কেটিং",
-        logo: insta,
-        price: "৳3",
-        priceValue: 3,
-        badge: "Popular",
-        detailsPath: "/active-jobs/instagram",
-        rating: 4.8
-    },
-    {
-        id: "gmail",
-        name: "জিমেইল মার্কেটিং",
-        logo: gmail,
-        price: "৳8",
-        priceValue: 8,
-        badge: "Trending",
-        detailsPath: "/active-jobs/gmail",
-        rating: 4.5
-    },
-    {
-        id: "whatsapp",
-        name: "হোয়াটসঅ্যাপ মার্কেটিং",
-        logo: whatsapp,
-        price: "৳20",
-        priceValue: 20,
-        badge: "Popular",
-        detailsPath: "/active-jobs/whatsapp",
-        rating: 4.7
-    },
-    {
-        id: "facebook",
-        name: "ফেসবুক মার্কেটিং",
-        logo: facebook,
-        price: "৳8",
-        priceValue: 8,
-        badge: "Trending",
-        detailsPath: "/active-jobs/facebook",
-        rating: 4.9
-    },
-];
 
 const ActiveJobs = () => {
+    const { fbBal } = useContext(activeJobContext)
     const [search, setSearch] = useState("");
     const [activeFilter, setActiveFilter] = useState("all");
+    
+    
+    const allJobs = [
+        {
+            id: "instagram",
+            name: "ইনস্টাগ্রাম মার্কেটিং",
+            logo: insta,
+            price: `৳ 'N/A'}`,
+            priceValue: '5',
+            badge: "Popular",
+            detailsPath: "/active-jobs/instagram",
+            rating: 4.8
+        },
+        {
+            id: "gmail",
+            name: "জিমেইল মার্কেটিং",
+            logo: gmail,
+            price: `৳ 'N/A'}`,
+            priceValue: '6',
+            badge: "Trending",
+            detailsPath: "/active-jobs/gmail",
+            rating: 4.5
+        },
+        {
+            id: "whatsapp",
+            name: "হোয়াটসঅ্যাপ মার্কেটিং",
+            logo: whatsapp,
+            price: `৳$ 'N/A'}`,
+            priceValue: "6",
+            badge: "Popular",
+            detailsPath: "/active-jobs/whatsapp",
+            rating: 4.7
+        },
+        {
+            id: "facebook",
+            name: "ফেসবুক মার্কেটিং",
+            logo: facebook,
+            price: `৳ ${fbBal} || 'N/A'}`,
+            priceValue: fbBal,
+            badge: "Trending",
+            detailsPath: "/active-jobs/facebook",
+            rating: 4.9
+        },
+    ];
+    console.log(fbBal);
+    
 
     const filteredJobs = allJobs.filter((job) => {
         // Search filter
