@@ -48,15 +48,17 @@ const CheckoutInfo = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    name: name,
-                    email: `${phone}@gmail.com`, // fallback email if not taken
+                    name,
+                    email: `${phone}@gmail.com`,
                     product: 'Online Order',
                     amount: orderSummary?.grandTotal?.toFixed(2) || 0,
-                    phone: phone,
-                    address: address,
-                    notes: notes,
-                    subscribe: subscribe,
+                    phone,
+                    address,
+                    notes,
+                    subscribe,
+                    orderSummary // <-- এটাও পাঠাও
                 }),
+
             });
 
             const data = await response.json();
