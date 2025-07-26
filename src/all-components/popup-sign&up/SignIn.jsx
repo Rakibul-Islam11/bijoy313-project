@@ -69,7 +69,7 @@ const SignIn = () => {
 
             if (/^\+?\d+$/.test(emailOrPhone)) {
                 const normalizedPhone = normalizePhoneNumber(emailOrPhone);
-                const response = await axios.post('https://bijoy-server.vercel.app/users/find-by-phone', {
+                const response = await axios.post('https://bijoy-server-nu.vercel.app/users/find-by-phone', {
                     phone: normalizedPhone
                 });
 
@@ -78,14 +78,14 @@ const SignIn = () => {
                     await signIn(email, password)
                         .then(result => {
                             showSuccessAlert();
-                            
+
                         })
                         .catch(err => {
                             setError('Invalid password or account not found');
                         });
                 } else {
                     const withoutCountryCode = normalizedPhone.replace(/^\+880/, '0');
-                    const fallbackResponse = await axios.post('https://bijoy-server.vercel.app/users/find-by-phone', {
+                    const fallbackResponse = await axios.post('https://bijoy-server-nu.vercel.app/users/find-by-phone', {
                         phone: withoutCountryCode
                     });
 
@@ -94,7 +94,7 @@ const SignIn = () => {
                         await signIn(email, password)
                             .then(result => {
                                 showSuccessAlert();
-                                
+
                             })
                             .catch(err => {
                                 setError('Invalid password or account not found');

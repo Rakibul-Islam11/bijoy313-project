@@ -438,7 +438,7 @@ const ProductUpload = () => {
                 subscriptionPlans: isSubscription ? subscriptionPlans.filter(plan => plan.duration.trim() !== "" && plan.price.trim() !== "") : null
             };
 
-            const response = await axios.post('https://bijoy-server.vercel.app/api/products', productData, {
+            const response = await axios.post('https://bijoy-server-nu.vercel.app/api/products', productData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }

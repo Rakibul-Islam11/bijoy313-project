@@ -16,9 +16,9 @@ const InstagramMarketingDetails = () => {
     const { user, loading: authLoading } = useContext(authContext);
     const { totalBalance } = useContext(activeJobContext);
     const [jobData, setJobData] = useState({
-            price: 0, // Default price
-        });
-        const [error, setError] = useState(null);
+        price: 0, // Default price
+    });
+    const [error, setError] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const unitPrice = jobData.price;
     const totalPrice = (quantity * unitPrice).toFixed(2);
@@ -28,11 +28,12 @@ const InstagramMarketingDetails = () => {
     const [profileLoading, setProfileLoading] = useState(true);
     const [showEarningLimitAlert, setShowEarningLimitAlert] = useState(false);
     const navigate = useNavigate();
+console.log(userProfile?.payment);
 
     useEffect(() => {
         const fetchJobData = () => {
             axios
-                .get('https://bijoy-server.vercel.app/api/active-job-update/instagram-marketing')
+                .get('https://bijoy-server-nu.vercel.app/api/active-job-update/instagram-marketing')
                 .then(res => {
                     if (res.data.success) {
                         setJobData(res.data.data);
@@ -85,7 +86,7 @@ const InstagramMarketingDetails = () => {
         }
 
         try {
-            const response = await axios.get(`https://bijoy-server.vercel.app/users/by-uid/${user.uid}`);
+            const response = await axios.get(`https://bijoy-server-nu.vercel.app/users/by-uid/${user.uid}`);
 
             if (response.data.success) {
                 setUserProfile(response.data.user);
@@ -158,7 +159,7 @@ const InstagramMarketingDetails = () => {
                 status: 'pending'
             };
 
-            const res = await axios.post("https://bijoy-server.vercel.app/api/active-jobs", jobData);
+            const res = await axios.post("https://bijoy-server-nu.vercel.app/api/active-jobs", jobData);
 
             if (res.data.success) {
                 MySwal.fire({

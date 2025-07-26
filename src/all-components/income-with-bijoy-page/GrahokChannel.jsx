@@ -12,7 +12,7 @@ const GrahokChannel = () => {
     useEffect(() => {
         if (userProfile?.referralCode) {
             axios
-                .get(`https://bijoy-server.vercel.app/api/referral-tree/${userProfile.referralCode}`)
+                .get(`https://bijoy-server-nu.vercel.app/api/referral-tree/${userProfile.referralCode}`)
                 .then((res) => {
                     setReferralTree(res.data.tree || []);
                     setLoading(false);

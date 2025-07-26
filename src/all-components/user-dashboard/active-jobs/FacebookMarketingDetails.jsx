@@ -14,7 +14,7 @@ const MySwal = withReactContent(Swal);
 
 const FacebookMarketingDetails = () => {
     const { user, loading } = useContext(authContext);
-    
+
     const { totalBalance } = useContext(activeJobContext);
     const [jobData, setJobData] = useState({
         price: 0, // Default price
@@ -28,11 +28,11 @@ const FacebookMarketingDetails = () => {
     const [userProfile, setUserProfile] = useState(null);
     const [showEarningLimitAlert, setShowEarningLimitAlert] = useState(false);
     const navigate = useNavigate();
-    
+
     useEffect(() => {
         const fetchJobData = () => {
             axios
-                .get('https://bijoy-server.vercel.app/api/active-job-update/facebook-marketing')
+                .get('https://bijoy-server-nu.vercel.app/api/active-job-update/facebook-marketing')
                 .then(res => {
                     if (res.data.success) {
                         setJobData(res.data.data);
@@ -58,7 +58,7 @@ const FacebookMarketingDetails = () => {
     const fetchUserData = async () => {
         if (user) {
             try {
-                const response = await fetch(`https://bijoy-server.vercel.app/users/by-uid/${user.uid}`);
+                const response = await fetch(`https://bijoy-server-nu.vercel.app/users/by-uid/${user.uid}`);
                 const data = await response.json();
                 if (data.success) {
                     setUserProfile(data.user);
@@ -155,7 +155,7 @@ const FacebookMarketingDetails = () => {
                 status: 'pending'
             };
 
-            const res = await axios.post("https://bijoy-server.vercel.app/api/active-jobs", jobData);
+            const res = await axios.post("https://bijoy-server-nu.vercel.app/api/active-jobs", jobData);
 
             if (res.data.success) {
                 MySwal.fire({

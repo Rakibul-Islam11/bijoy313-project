@@ -2,7 +2,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-import bannerImg from "../../assets/navbrand-logo/Add a subheading (1280 x 420 px).webp";
+import bannerImg from "../../assets/heosilder/current.webp";
 
 const HeroSlider = () => {
     const slides = [1, 2, 3, 4, 5]; // Number of slides

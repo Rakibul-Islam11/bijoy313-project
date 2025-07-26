@@ -38,7 +38,7 @@ const ActiveJobReport = () => {
 
         const fetchJobs = async () => {
             try {
-                const res = await axios.get("https://bijoy-server.vercel.app/api/active-jobs");
+                const res = await axios.get("https://bijoy-server-nu.vercel.app/api/active-jobs");
                 if (res.data.success) {
                     setJobs(res.data.data);
                     setError(null);
@@ -71,7 +71,7 @@ const ActiveJobReport = () => {
             await Promise.all(
                 uniqueUids.map(async (uid) => {
                     try {
-                        const res = await axios.get(`https://bijoy-server.vercel.app/users/by-uid/${uid}`);
+                        const res = await axios.get(`https://bijoy-server-nu.vercel.app/users/by-uid/${uid}`);
                         newUserInfoMap[uid] = res.data.success ? res.data.user : null;
                     } catch {
                         newUserInfoMap[uid] = null;
@@ -131,7 +131,7 @@ const ActiveJobReport = () => {
             const totalAmount = job.unitPrice * job.quantity;
 
             // Save to completed works
-            await axios.post("https://bijoy-server.vercel.app/api/user-completed-works", {
+            await axios.post("https://bijoy-server-nu.vercel.app/api/user-completed-works", {
                 uid: job.uid,
                 jobId: job._id,
                 remainingBalance: totalAmount,
@@ -150,7 +150,7 @@ const ActiveJobReport = () => {
             });
 
             // Update wallet balance
-            await axios.put("https://bijoy-server.vercel.app/api/wallets/update-balance", {
+            await axios.put("https://bijoy-server-nu.vercel.app/api/wallets/update-balance", {
                 uid: job.uid,
                 amount: totalAmount
             });
@@ -169,7 +169,7 @@ const ActiveJobReport = () => {
             const job = jobs.find(j => j._id === jobId);
 
             // 1. Update the job status first
-            const res = await axios.put(`https://bijoy-server.vercel.app/api/active-jobs/${jobId}/status`, {
+            const res = await axios.put(`https://bijoy-server-nu.vercel.app/api/active-jobs/${jobId}/status`, {
                 status: newStatus
             });
 
@@ -182,13 +182,13 @@ const ActiveJobReport = () => {
                 const totalAmount = job.unitPrice * job.quantity;
 
                 // Check if job already exists in completed works
-                const checkResponse = await axios.get(`https://bijoy-server.vercel.app/api/user-completed-works/by-job-id/${job._id}`);
+                const checkResponse = await axios.get(`https://bijoy-server-nu.vercel.app/api/user-completed-works/by-job-id/${job._id}`);
 
                 if (!checkResponse.data.success || !checkResponse.data.completedWork) {
                     // Job doesn't exist in completed works, so proceed with full process
 
                     // 2. Save to completed works
-                    await axios.post("https://bijoy-server.vercel.app/api/user-completed-works", {
+                    await axios.post("https://bijoy-server-nu.vercel.app/api/user-completed-works", {
                         uid: job.uid,
                         jobId: job._id,
                         remainingBalance: totalAmount,
@@ -207,7 +207,7 @@ const ActiveJobReport = () => {
                     });
 
                     // ✅ 2.1 Report submit to active-job-reports (for audit trail)
-                    await axios.post("https://bijoy-server.vercel.app/api/active-job-reports", {
+                    await axios.post("https://bijoy-server-nu.vercel.app/api/active-job-reports", {
                         jobId: job._id,
                         uid: job.uid,
                         balance: totalAmount,
@@ -220,7 +220,7 @@ const ActiveJobReport = () => {
                     });
 
                     // 3. Update wallet balance
-                    await axios.put("https://bijoy-server.vercel.app/api/wallets/update-balance", {
+                    await axios.put("https://bijoy-server-nu.vercel.app/api/wallets/update-balance", {
                         uid: job.uid,
                         amount: totalAmount
                     });
@@ -304,7 +304,7 @@ const ActiveJobReport = () => {
 
         try {
             const jobIds = filteredJobs.map(job => job._id);
-            const res = await axios.put(`https://bijoy-server.vercel.app/api/active-jobs/bulk-status`, {
+            const res = await axios.put(`https://bijoy-server-nu.vercel.app/api/active-jobs/bulk-status`, {
                 jobIds,
                 status: bulkStatus
             });
@@ -394,7 +394,7 @@ const ActiveJobReport = () => {
 
         try {
             // Step 1: Submit the job report
-            const reportRes = await axios.post("https://bijoy-server.vercel.app/api/active-job-reports", {
+            const reportRes = await axios.post("https://bijoy-server-nu.vercel.app/api/active-job-reports", {
                 jobId: reportModal.jobId,
                 uid: reportModal.uid,
                 reasons: reportReason,
@@ -416,7 +416,7 @@ const ActiveJobReport = () => {
                 };
 
                 // Save to completed works
-                await axios.post("https://bijoy-server.vercel.app/api/user-completed-works", {
+                await axios.post("https://bijoy-server-nu.vercel.app/api/user-completed-works", {
                     uid: reportModal.uid,
                     jobId: reportModal.jobId,
                     remainingBalance: remainingAmount,
@@ -425,7 +425,7 @@ const ActiveJobReport = () => {
                 });
 
                 // Update wallet balance
-                await axios.put("https://bijoy-server.vercel.app/api/wallets/update-balance", {
+                await axios.put("https://bijoy-server-nu.vercel.app/api/wallets/update-balance", {
                     uid: reportModal.uid,
                     amount: remainingAmount
                 });

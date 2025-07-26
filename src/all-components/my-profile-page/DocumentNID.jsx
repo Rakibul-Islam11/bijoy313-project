@@ -16,7 +16,7 @@ const DocumentNID = () => {
     const fetchUserData = async () => {
         if (user) {
             try {
-                const response = await fetch(`https://bijoy-server.vercel.app/users/by-uid/${user.uid}`);
+                const response = await fetch(`https://bijoy-server-nu.vercel.app/users/by-uid/${user.uid}`);
                 const data = await response.json();
                 if (data.success) setUserProfile(data.user);
             } catch (error) {
@@ -97,7 +97,7 @@ const DocumentNID = () => {
                 nidBack: backUrl,
             };
 
-            const res = await axios.post("https://bijoy-server.vercel.app/api/nid-upload", payload);
+            const res = await axios.post("https://bijoy-server-nu.vercel.app/api/nid-upload", payload);
 
             Swal.fire({
                 icon: "success",

@@ -1,18 +1,14 @@
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const ScrollReSet = () => {
     const { pathname } = useLocation();
 
-    useEffect(() => {
-        window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: 'auto' // 'smooth' দিলে scroll animation হবে
-        });
+    useLayoutEffect(() => {
+        window.scrollTo(0, 0); // Instantly jump before paint
     }, [pathname]);
 
-    return null; // শুধু effect চালায়, কিছু render করে না
+    return null;
 };
 
 export default ScrollReSet;

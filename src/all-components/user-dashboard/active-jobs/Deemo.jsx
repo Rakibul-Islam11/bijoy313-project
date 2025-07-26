@@ -7,7 +7,7 @@ const Deemo = () => {
 
     useEffect(() => {
         axios
-            .get("https://bijoy-server.vercel.app/api/active-jobs/facebook-marketing")
+            .get("https://bijoy-server-nu.vercel.app/api/active-jobs/facebook-marketing")
             .then((res) => {
                 setJobs(res.data.jobs || []);
                 setLoading(false);

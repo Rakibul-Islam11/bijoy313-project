@@ -26,7 +26,7 @@ const ProductReview = ({ productId }) => {
     const fetchUserData = async () => {
         if (user) {
             try {
-                const response = await fetch(`https://bijoy-server.vercel.app/users/by-uid/${user.uid}`);
+                const response = await fetch(`https://bijoy-server-nu.vercel.app/users/by-uid/${user.uid}`);
                 const data = await response.json();
                 if (data.success) {
                     setUserProfile(data.user);
@@ -70,7 +70,7 @@ const ProductReview = ({ productId }) => {
         setIsLoadingReviews(true);
         try {
             const res = await axios.get(
-                `https://bijoy-server.vercel.app/api/reviews?productId=${productId}&page=${page}&limit=10`
+                `https://bijoy-server-nu.vercel.app/api/reviews?productId=${productId}&page=${page}&limit=10`
             );
             setReviews(res.data.reviews);
             setPagination(res.data.pagination);
@@ -165,13 +165,13 @@ const ProductReview = ({ productId }) => {
         try {
             if (editingReviewId) {
                 const { data } = await axios.put(
-                    `https://bijoy-server.vercel.app/api/reviews/${editingReviewId}`,
+                    `https://bijoy-server-nu.vercel.app/api/reviews/${editingReviewId}`,
                     payload
                 );
                 setReviews(reviews.map(r => r._id === editingReviewId ? data : r));
             } else {
                 const { data } = await axios.post(
-                    'https://bijoy-server.vercel.app/api/reviews',
+                    'https://bijoy-server-nu.vercel.app/api/reviews',
                     payload
                 );
                 setReviews([data, ...reviews]);
@@ -210,7 +210,7 @@ const ProductReview = ({ productId }) => {
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this review?")) return;
         try {
-            await axios.delete(`https://bijoy-server.vercel.app/api/reviews/${id}`);
+            await axios.delete(`https://bijoy-server-nu.vercel.app/api/reviews/${id}`);
             setReviews(reviews.filter(r => r._id !== id));
             // Update pagination totals
             setPagination(prev => ({
@@ -348,99 +348,99 @@ const ProductReview = ({ productId }) => {
                 ) : (
                     <>
                         <div className="space-y-3 md:space-y-6">
-                                    {reviews.map(review => (
-                                        <div
-                                            key={review._id}
-                                            className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden transition hover:shadow-lg"
-                                        >
-                                            <div className="p-5 sm:p-6">
-                                                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                                                    {/* User Info + Content */}
-                                                    <div className="flex-1">
-                                                        <div className="flex items-start gap-4">
-                                                            {/* User Avatar */}
-                                                            <div className="flex-shrink-0">
-                                                                {review.userPhoto ? (
-                                                                    <img
-                                                                        src={review.userPhoto}
-                                                                        alt={review.userName}
-                                                                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover border-2 border-white shadow"
-                                                                    />
-                                                                ) : (
-                                                                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
-                                                                        <FaUser size={20} />
-                                                                    </div>
-                                                                )}
-                                                            </div>
-
-                                                            {/* Name + Rating */}
-                                                            <div className="flex-1">
-                                                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                                                                    <h3 className="font-semibold text-gray-800 text-base sm:text-lg">
-                                                                        {review.userName}
-                                                                    </h3>
-                                                                    <span className="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-0">
-                                                                        {formatDate(review.createdAt)}
-                                                                    </span>
-                                                                </div>
-
-                                                                <div className="mt-1">
-                                                                    <Rating
-                                                                        readonly
-                                                                        initialRating={review.rating}
-                                                                        emptySymbol={<FaRegStar className="text-gray-300" />}
-                                                                        fullSymbol={<FaStar className="text-yellow-400" />}
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        {/* Comment */}
-                                                        <p className="text-gray-700 mt-4 ml-16 sm:ml-16 text-sm sm:text-base break-words whitespace-pre-line overflow-hidden">
-                                                            {review.comment}
-                                                        </p>
-
-                                                        {/* Images */}
-                                                        {review.images && review.images.length > 0 && (
-                                                            <div className="flex flex-wrap gap-3 mt-4 ml-16 sm:ml-16">
-                                                                {review.images.map((img, i) => (
-                                                                    <img
-                                                                        key={i}
-                                                                        src={img}
-                                                                        alt={`Review by ${review.userName}`}
-                                                                        className="w-20 h-20 object-cover rounded-lg border border-gray-200 cursor-pointer hover:opacity-80 transition"
-                                                                        onClick={() => window.open(img, '_blank')}
-                                                                    />
-                                                                ))}
+                            {reviews.map(review => (
+                                <div
+                                    key={review._id}
+                                    className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden transition hover:shadow-lg"
+                                >
+                                    <div className="p-5 sm:p-6">
+                                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                                            {/* User Info + Content */}
+                                            <div className="flex-1">
+                                                <div className="flex items-start gap-4">
+                                                    {/* User Avatar */}
+                                                    <div className="flex-shrink-0">
+                                                        {review.userPhoto ? (
+                                                            <img
+                                                                src={review.userPhoto}
+                                                                alt={review.userName}
+                                                                className="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover border-2 border-white shadow"
+                                                            />
+                                                        ) : (
+                                                            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                                                                <FaUser size={20} />
                                                             </div>
                                                         )}
                                                     </div>
 
-                                                    {/* Edit/Delete Actions */}
-                                                    {user?.uid === review.userId && (
-                                                        <div className="flex items-center gap-3">
-                                                            <button
-                                                                onClick={() => handleEdit(review)}
-                                                                className="text-blue-500 hover:text-blue-700 transition"
-                                                                aria-label="Edit review"
-                                                                title="Edit"
-                                                            >
-                                                                <FaEdit size={18} />
-                                                            </button>
-                                                            <button
-                                                                onClick={() => handleDelete(review._id)}
-                                                                className="text-red-500 hover:text-red-700 transition"
-                                                                aria-label="Delete review"
-                                                                title="Delete"
-                                                            >
-                                                                <FaTrash size={18} />
-                                                            </button>
+                                                    {/* Name + Rating */}
+                                                    <div className="flex-1">
+                                                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                                                            <h3 className="font-semibold text-gray-800 text-base sm:text-lg">
+                                                                {review.userName}
+                                                            </h3>
+                                                            <span className="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-0">
+                                                                {formatDate(review.createdAt)}
+                                                            </span>
                                                         </div>
-                                                    )}
+
+                                                        <div className="mt-1">
+                                                            <Rating
+                                                                readonly
+                                                                initialRating={review.rating}
+                                                                emptySymbol={<FaRegStar className="text-gray-300" />}
+                                                                fullSymbol={<FaStar className="text-yellow-400" />}
+                                                            />
+                                                        </div>
+                                                    </div>
                                                 </div>
+
+                                                {/* Comment */}
+                                                <p className="text-gray-700 mt-4 ml-16 sm:ml-16 text-sm sm:text-base break-words whitespace-pre-line overflow-hidden">
+                                                    {review.comment}
+                                                </p>
+
+                                                {/* Images */}
+                                                {review.images && review.images.length > 0 && (
+                                                    <div className="flex flex-wrap gap-3 mt-4 ml-16 sm:ml-16">
+                                                        {review.images.map((img, i) => (
+                                                            <img
+                                                                key={i}
+                                                                src={img}
+                                                                alt={`Review by ${review.userName}`}
+                                                                className="w-20 h-20 object-cover rounded-lg border border-gray-200 cursor-pointer hover:opacity-80 transition"
+                                                                onClick={() => window.open(img, '_blank')}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                )}
                                             </div>
+
+                                            {/* Edit/Delete Actions */}
+                                            {user?.uid === review.userId && (
+                                                <div className="flex items-center gap-3">
+                                                    <button
+                                                        onClick={() => handleEdit(review)}
+                                                        className="text-blue-500 hover:text-blue-700 transition"
+                                                        aria-label="Edit review"
+                                                        title="Edit"
+                                                    >
+                                                        <FaEdit size={18} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(review._id)}
+                                                        className="text-red-500 hover:text-red-700 transition"
+                                                        aria-label="Delete review"
+                                                        title="Delete"
+                                                    >
+                                                        <FaTrash size={18} />
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
-                                    ))}
+                                    </div>
+                                </div>
+                            ))}
 
                         </div>
 

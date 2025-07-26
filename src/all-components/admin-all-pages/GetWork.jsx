@@ -14,7 +14,7 @@ const GetWork = () => {
 
         const fetchJobs = async () => {
             try {
-                const res = await axios.get(`https://bijoy-server.vercel.app/api/active-jobs-reports/${user.uid}`);
+                const res = await axios.get(`https://bijoy-server-nu.vercel.app/api/active-jobs-reports/${user.uid}`);
                 if (res.data.success) {
                     setJobs(res.data.data);
 

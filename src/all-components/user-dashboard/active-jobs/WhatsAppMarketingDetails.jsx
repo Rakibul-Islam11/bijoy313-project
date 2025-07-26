@@ -16,9 +16,9 @@ const WhatsAppMarketingDetails = () => {
     const { user, loading } = useContext(authContext);
     const { totalBalance } = useContext(activeJobContext);
     const [jobData, setJobData] = useState({
-                price: 0, // Default price
-            });
-            const [error, setError] = useState(null);
+        price: 0, // Default price
+    });
+    const [error, setError] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const unitPrice = jobData.price;
     const totalPrice = (quantity * unitPrice).toFixed(2);
@@ -30,7 +30,7 @@ const WhatsAppMarketingDetails = () => {
     useEffect(() => {
         const fetchJobData = () => {
             axios
-                .get('https://bijoy-server.vercel.app/api/active-job-update/whats-app-marketing')
+                .get('https://bijoy-server-nu.vercel.app/api/active-job-update/whats-app-marketing')
                 .then(res => {
                     if (res.data.success) {
                         setJobData(res.data.data);
@@ -56,7 +56,7 @@ const WhatsAppMarketingDetails = () => {
     const fetchUserData = async () => {
         if (user) {
             try {
-                const response = await fetch(`https://bijoy-server.vercel.app/users/by-uid/${user.uid}`);
+                const response = await fetch(`https://bijoy-server-nu.vercel.app/users/by-uid/${user.uid}`);
                 const data = await response.json();
                 if (data.success) {
                     setUserProfile(data.user);
@@ -155,7 +155,7 @@ const WhatsAppMarketingDetails = () => {
                 status: 'pending'
             };
 
-            const res = await axios.post("https://bijoy-server.vercel.app/api/active-jobs", jobData);
+            const res = await axios.post("https://bijoy-server-nu.vercel.app/api/active-jobs", jobData);
 
             if (res.data.success) {
                 await MySwal.fire({

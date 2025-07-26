@@ -8,7 +8,7 @@ const DemoOne = () => {
     const [message, setMessage] = useState('');
 
     useEffect(() => {
-        axios.get('https://bijoy-server.vercel.app/api/active-job-update')
+        axios.get('https://bijoy-server-nu.vercel.app/api/active-job-update')
             .then(res => setJobs(res.data.jobs))
             .catch(err => console.error(err));
     }, []);
@@ -29,7 +29,7 @@ const DemoOne = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.put(`https://bijoy-server.vercel.app/api/active-job-update/${selectedJobId}`, formData);
+            const res = await axios.put(`https://bijoy-server-nu.vercel.app/api/active-job-update/${selectedJobId}`, formData);
             setMessage(res.data.message);
         } catch (error) {
             console.error(error);
@@ -38,7 +38,7 @@ const DemoOne = () => {
     };
 
     return (
-        <div className="p-4 max-w-md mx-auto mt-5 md:mt-10">
+        <div className="p-4 max-w-md mx-auto text-black mt-5 md:mt-10">
             <h2 className="text-xl font-semibold mb-4">Update Job Info</h2>
 
             <select className="border p-2 w-full mb-4" onChange={handleSelectChange} defaultValue="">

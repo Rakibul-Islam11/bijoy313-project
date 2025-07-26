@@ -17,7 +17,7 @@ const Sidebar = ({ active, isMobile, onClose }) => {
     const fetchUserData = async () => {
         if (user) {
             try {
-                const response = await fetch(`https://bijoy-server.vercel.app/users/by-uid/${user.uid}`);
+                const response = await fetch(`https://bijoy-server-nu.vercel.app/users/by-uid/${user.uid}`);
                 const data = await response.json();
                 if (data.success) {
                     setUserProfile(data.user);
@@ -54,7 +54,7 @@ const Sidebar = ({ active, isMobile, onClose }) => {
                 <div>
                     <h3 className="font-semibold text-sm">{userProfile?.displayName}</h3>
                     {userProfile?.payment == "unpaid" ? <p className="text-xs text-gray-500">Unverified Member</p > : <p className="text-xs text-gray-500">Verified Member</p>}
-                    
+
                 </div>
             </div>
 

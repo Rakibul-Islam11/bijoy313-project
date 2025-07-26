@@ -13,7 +13,7 @@ const AllProducts = () => {
     const location = useLocation();
     const cameFromBottomNavbar = location.state?.from === 'bottom-navbar-products';
     console.log(products);
-    
+
     const lastProductRef = useCallback((node) => {
         if (loading) return;
         if (observer.current) observer.current.disconnect();
@@ -30,7 +30,7 @@ const AllProducts = () => {
     const fetchProducts = async (currentSkip) => {
         setLoading(true);
         try {
-            const res = await axios.get(`https://bijoy-server.vercel.app/api/products?limit=${LIMIT}&skip=${currentSkip}`);
+            const res = await axios.get(`https://bijoy-server-nu.vercel.app/api/products?limit=${LIMIT}&skip=${currentSkip}`);
             const newProducts = res.data.products;
 
             // Remove duplicate products by _id
@@ -117,7 +117,7 @@ const AllProducts = () => {
                                         <p className="text-red-600 font-bold text-lg">৳{product.simpleProduct.price}</p>
                                     </div>
                                 )}
-                                {product.mainCategory=="beauty" && (
+                                {product.mainCategory == "beauty" && (
                                     <div className="flex items-center gap-2">
                                         {product.simpleProduct && (
                                             <del className="text-gray-500 text-sm">৳{product.simpleProduct.regularPrice}</del>
@@ -125,7 +125,7 @@ const AllProducts = () => {
                                         <p className="text-red-600 font-bold text-lg">৳{product.simpleProduct.price}</p>
                                     </div>
                                 )}
-                                {product.mainCategory =="electronics" && (
+                                {product.mainCategory == "electronics" && (
                                     <div className="flex items-center gap-2">
                                         {product.simpleProduct && (
                                             <del className="text-gray-500 text-sm">৳{product.simpleProduct.regularPrice}</del>

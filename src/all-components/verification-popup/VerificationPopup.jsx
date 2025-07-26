@@ -34,7 +34,7 @@ const VerificationPopup = () => {
             user.reload().then(() => {
                 if (user.emailVerified) {
                     clearInterval(interval);
-                    axios.patch('https://bijoy-server.vercel.app/users/verify-user', {
+                    axios.patch('https://bijoy-server-nu.vercel.app/users/verify-user', {
                         email: user.email,
                         verificationMethod: 'email',
                         isVerified: true
@@ -69,7 +69,7 @@ const VerificationPopup = () => {
     const sendOtpToPhone = async (phoneNumber) => {
         try {
             setOtpError('');
-            const response = await axios.post('https://bijoy-server.vercel.app/api/send-otp', {
+            const response = await axios.post('https://bijoy-server-nu.vercel.app/api/send-otp', {
                 phoneNumber: phoneNumber
             });
 
@@ -98,13 +98,13 @@ const VerificationPopup = () => {
                 return;
             }
 
-            const verificationResponse = await axios.post('https://bijoy-server.vercel.app/api/verify-otp', {
+            const verificationResponse = await axios.post('https://bijoy-server-nu.vercel.app/api/verify-otp', {
                 phoneNumber: verificationPhone,
                 otp: otp
             });
 
             if (verificationResponse.data.success) {
-                await axios.patch('https://bijoy-server.vercel.app/users/verify-user', {
+                await axios.patch('https://bijoy-server-nu.vercel.app/users/verify-user', {
                     email: verificationEmail,
                     verificationMethod: 'phone',
                     isVerified: true

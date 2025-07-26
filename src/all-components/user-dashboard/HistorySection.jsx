@@ -15,7 +15,7 @@ const HistorySection = () => {
 
         if (user?.uid) {
             const fetchJobHistory = () => {
-                axios.get(`https://bijoy-server.vercel.app/api/active-jobs/${user.uid}`)
+                axios.get(`https://bijoy-server-nu.vercel.app/api/active-jobs/${user.uid}`)
                     .then(res => {
                         if (res.data.success) {
                             setJobHistory(res.data.data);

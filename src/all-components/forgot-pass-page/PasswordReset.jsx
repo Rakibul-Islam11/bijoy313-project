@@ -35,7 +35,7 @@ const PasswordReset = () => {
                 setNormalizedPhone(normalizedPhone);
 
                 // Send OTP to phone
-                const response = await axios.post('https://bijoy-server.vercel.app/auth/send-reset-otp', {
+                const response = await axios.post('https://bijoy-server-nu.vercel.app/auth/send-reset-otp', {
                     phone: normalizedPhone
                 });
 
@@ -81,7 +81,7 @@ const PasswordReset = () => {
         setIsLoading(true);
 
         try {
-            const response = await axios.post('https://bijoy-server.vercel.app/auth/reset-password-with-otp', {
+            const response = await axios.post('https://bijoy-server-nu.vercel.app/auth/reset-password-with-otp', {
                 phone: normalizedPhone,
                 otp,
                 newPassword

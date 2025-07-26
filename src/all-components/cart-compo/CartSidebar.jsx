@@ -16,7 +16,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
 
         const fetchCart = async () => {
             try {
-                const res = await axios.get(`https://bijoy-server.vercel.app/api/carts/${user.uid}`);
+                const res = await axios.get(`https://bijoy-server-nu.vercel.app/api/carts/${user.uid}`);
                 if (res.data.success) {
                     setCartItems(res.data.cartItems);
                 }
@@ -58,7 +58,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
     const handleRemoveItem = async (cartItemId) => {
         setRemovingItemId(cartItemId);
         try {
-            const res = await axios.delete(`https://bijoy-server.vercel.app/api/carts/${cartItemId}`);
+            const res = await axios.delete(`https://bijoy-server-nu.vercel.app/api/carts/${cartItemId}`);
             if (res.data.success) {
                 setCartItems(cartItems.filter(item => item._id !== cartItemId));
             }
@@ -74,7 +74,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
 
         setUpdatingItemId(cartItemId);
         try {
-            const res = await axios.put(`https://bijoy-server.vercel.app/api/carts/${cartItemId}`, {
+            const res = await axios.put(`https://bijoy-server-nu.vercel.app/api/carts/${cartItemId}`, {
                 quantity: newQuantity
             });
 
@@ -222,7 +222,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
                                         <span className="font-bold text-gray-900">৳{subtotal.toFixed(2)}</span>
                                     </div>
                                     <Link
-                                                to="/checkout"
+                                        to="/checkout"
                                         className="block w-full bg-[#ff0768] text-white py-3 px-6 rounded-full text-center font-medium hover:bg-[#e6065d] transition-colors shadow-md hover:shadow-lg"
                                         onClick={onClose}
                                     >

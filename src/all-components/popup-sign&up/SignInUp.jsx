@@ -182,7 +182,7 @@ const SignInUp = () => {
             const newCode = generateRandomCode();
 
             try {
-                const response = await axios.get(`https://bijoy-server.vercel.app/users/check-referral/${newCode}`);
+                const response = await axios.get(`https://bijoy-server-nu.vercel.app/users/check-referral/${newCode}`);
 
                 if (!response.data.exists) {
                     return newCode;
@@ -200,7 +200,7 @@ const SignInUp = () => {
 
     const saveUserToDatabase = async (userData) => {
         try {
-            const response = await axios.post('https://bijoy-server.vercel.app/users', userData);
+            const response = await axios.post('https://bijoy-server-nu.vercel.app/users', userData);
             return response.data;
         } catch (error) {
             console.error('Error saving user to database:', error);
@@ -230,7 +230,7 @@ const SignInUp = () => {
                     };
                 }
 
-                const checkPhoneResponse = await axios.post('https://bijoy-server.vercel.app/users/check-phone', {
+                const checkPhoneResponse = await axios.post('https://bijoy-server-nu.vercel.app/users/check-phone', {
                     phone: formData.phone
                 });
 
@@ -290,7 +290,7 @@ const SignInUp = () => {
                 };
 
                 await saveUserToDatabase(userData);
-                await axios.post('https://bijoy-server.vercel.app/api/create-wallet', {
+                await axios.post('https://bijoy-server-nu.vercel.app/api/create-wallet', {
                     uid: user.uid
                 });
                 await updateUserProfile(formData.name, "https://i.ibb.co/6cJ5ggMC/user-icon-on-transparent-background-free-png.webp", referralCode);
@@ -421,7 +421,7 @@ const SignInUp = () => {
                                 <div>
                                     <div className="flex flex-row items-center">
                                         <label className="block mb-1 text-gray-700">E-Mail*</label>
-                                        
+
                                     </div>
 
                                     <input
@@ -491,15 +491,22 @@ const SignInUp = () => {
 
                                 {userType === 'freelancer' && (
                                     <div>
-                                        <div className="flex flex-row items-start justify-start gap-2">
-                                            <label className="block mb-1 text-gray-700">Refer Code</label>
-                                            {errors.referCode && <p className="text-red-500 text-xs mt-1">{errors.referCode}</p>}
+                                        <div className="flex flex-col items-start justify-start gap-1">
+                                            <div className="flex items-center ">
+                                                <label className="block text-gray-700">Refer Code</label>
+
+                                            </div>
+
+                                            {errors.referCode && (
+                                                <p className="text-red-500 text-xs mt-1">{errors.referCode}</p>
+                                            )}
                                         </div>
+
 
                                         <input
                                             type="text"
                                             name="referCode"
-                                            placeholder="Referral code (optional)"
+                                            placeholder="অবশ্যই small লেটার হতে হবে"
                                             value={formData.referCode}
                                             onChange={handleChange}
                                             className={`w-full px-2 py-1.5 border ${errors.referCode ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-blue-500 placeholder-gray-400 text-gray-500`}

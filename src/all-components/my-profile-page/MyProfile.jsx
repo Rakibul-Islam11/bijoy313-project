@@ -11,7 +11,7 @@ const MyProfile = () => {
     const fetchUserData = async () => {
         if (user) {
             try {
-                const response = await fetch(`https://bijoy-server.vercel.app/users/by-uid/${user.uid}`);
+                const response = await fetch(`https://bijoy-server-nu.vercel.app/users/by-uid/${user.uid}`);
                 const data = await response.json();
                 if (data.success) {
                     setUserProfile(data.user);
@@ -69,7 +69,7 @@ const MyProfile = () => {
         switch (activeTab) {
             case 'basic':
                 return (
-                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl">
+                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl md:mt-15">
                         <div className="flex flex-col space-y-6">
                             <div className="flex justify-between items-center">
                                 <h2 className="text-2xl font-bold text-gray-800">Basic Information</h2>
@@ -140,7 +140,7 @@ const MyProfile = () => {
                 );
             case 'personal':
                 return (
-                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl">
+                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl md:mt-12">
                         <div className="flex flex-col space-y-6">
                             <div className="flex justify-between items-center">
                                 <h2 className="text-2xl font-bold text-gray-800">Personal Information</h2>
@@ -220,7 +220,7 @@ const MyProfile = () => {
                 );
             case 'documents':
                 return (
-                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl">
+                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl md:mt-12">
                         <div className="flex flex-col space-y-6">
                             <div className="flex justify-between items-center">
                                 <h2 className="text-2xl font-bold text-gray-800">Document Verification</h2>
@@ -298,7 +298,7 @@ const MyProfile = () => {
                 );
             case 'address':
                 return (
-                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl">
+                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl md:mt-12">
                         <div className="flex flex-col space-y-6">
                             <div className="flex justify-between items-center">
                                 <h2 className="text-2xl font-bold text-gray-800">Address Information</h2>
@@ -378,7 +378,7 @@ const MyProfile = () => {
                 );
             case 'additional':
                 return (
-                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl">
+                    <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl md:mt-13">
                         <div className="flex flex-col space-y-6">
                             <div className="flex justify-between items-center">
                                 <h2 className="text-2xl font-bold text-gray-800">Additional Information</h2>
@@ -533,7 +533,7 @@ const MyProfile = () => {
             {/* Sidebar */}
             <div className="w-full md:w-80 bg-white shadow-xl md:min-h-screen p-6">
                 <div className="sticky top-0 z-10 bg-white pb-6">
-                    <div className="flex flex-col items-center mb-8">
+                    <div className="flex flex-col items-center mb-8 mt-16">
                         <div className="relative mb-4 group">
                             <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-500 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-200"></div>
                             <div className="relative">

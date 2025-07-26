@@ -12,7 +12,7 @@ const PaymentPaidMemberLandng = () => {
     const fetchUserData = async () => {
         if (user) {
             try {
-                const response = await fetch(`https://bijoy-server.vercel.app/users/by-uid/${user.uid}`);
+                const response = await fetch(`https://bijoy-server-nu.vercel.app/users/by-uid/${user.uid}`);
                 const data = await response.json();
                 if (data.success) {
                     setUserProfile(data.user);
@@ -48,7 +48,7 @@ const PaymentPaidMemberLandng = () => {
         }
 
         try {
-            const res = await fetch('https://bijoy-server.vercel.app/api/payment-report', {
+            const res = await fetch('https://bijoy-server-nu.vercel.app/api/payment-report', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -114,7 +114,7 @@ const PaymentPaidMemberLandng = () => {
                                     <li>"Payment" অপশন সিলেক্ট করুন</li>
                                     <li>নম্বর: <span className="font-bold">01931282259</span></li>
                                     <li>নম্বর: <span className="font-bold">01817103429(শুধুমাত্র সেন্ডমানি)</span></li>
-                                    <li>টাকা: <span className="font-bold">২১৩ টাকা (অফার দুই দিনের জন্য)</span></li>
+                                    <li>টাকা: <span className="font-bold">৩১৩ টাকা (অফার দুই দিনের জন্য)</span></li>
                                     <li>ট্রানজেকশন আইডি নিচে সাবমিট করুন</li>
                                 </ol>
                             </>
@@ -125,7 +125,7 @@ const PaymentPaidMemberLandng = () => {
                                     <li>Nagad অ্যাপ বা *167# ডায়াল করুন</li>
                                     <li>"Send Money" অপশন সিলেক্ট করুন</li>
                                     <li>নম্বর: <span className="font-bold">01610-398465</span></li>
-                                    <li>টাকা: <span className="font-bold">২১৩ টাকা (অফার দুই দিনের জন্য)</span></li>
+                                    <li>টাকা: <span className="font-bold">৩১৩ টাকা (অফার দুই দিনের জন্য)</span></li>
                                     <li>ট্রানজেকশন আইডি নিচে সাবমিট করুন</li>
                                 </ol>
                             </>

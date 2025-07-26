@@ -23,15 +23,60 @@ const CheckoutInfo = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('Order Summary:', orderSummary);
-        console.log('Form Data:', formData);
-        // Proceed to next step or API call
-    };
+   const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    console.log('Order Summary:', orderSummary);
+    console.log('Form Data:', formData);
+
+    const { phone, name, address, notes, subscribe, paymentMethod } = formData;
+
+    // If COD, proceed differently (show confirmation / save locally / send to backend)
+    if (paymentMethod === 'cod') {
+        // ✅ You can optionally send the formData + orderSummary to backend for storage
+        console.log("Cash on Delivery selected. Proceeding without gateway...");
+        alert("Thank you! Your order has been placed via Cash on Delivery.");
+        return;
+    }
+
+    // For Online Payment via SSLCommerz
+    if (paymentMethod === 'uddoktapay') {
+        try {
+            const response = await fetch('https://bijoy-server-nu.vercel.app/initiate-payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: `${phone}@gmail.com`, // fallback email if not taken
+                    product: 'Online Order',
+                    amount: orderSummary?.grandTotal?.toFixed(2) || 0,
+                    phone: phone,
+                    address: address,
+                    notes: notes,
+                    subscribe: subscribe,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (data?.GatewayPageURL) {
+                window.location.href = data.GatewayPageURL;
+            } else {
+                alert("Payment gateway URL not received.");
+                console.error("Invalid gateway response:", data);
+            }
+        } catch (err) {
+            console.error("Payment request failed:", err);
+            alert("Something went wrong while initiating payment.");
+        }
+    }
+};
+
 
     return (
-        <div className="flex flex-col md:flex-row gap-8 p-6 text-black max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row gap-8 md:p-6 text-black max-w-7xl mx-auto mt-12 md:mt-10">
             {/* Right: Order Summary + Payment */}
             <div className="w-full md:w-1/3 space-y-2">
                 <div className="bg-gray-100 p-6 rounded-lg shadow-md">
@@ -89,9 +134,9 @@ const CheckoutInfo = () => {
                                 <input
                                     type="radio"
                                     name="paymentMethod"
-                                    value="sslcommerz"
+                                    value="uddoktapay"
                                     className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300"
-                                    checked={formData.paymentMethod === 'sslcommerz'}
+                                    checked={formData.paymentMethod === 'uddoktapay'}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -105,7 +150,7 @@ const CheckoutInfo = () => {
                                     </span>
                                 </div>
                                 <p className="mt-1 text-sm text-gray-600">
-                                    SSLCommerz এর মাধ্যমে কার্ড/মোবাইল ব্যাংকিং/ইন্টারনেট ব্যাংকিং
+                                    SSLCOMMERZ এর মাধ্যমে কার্ড/মোবাইল ব্যাংকিং/ইন্টারনেট ব্যাংকিং
                                 </p>
                                 <div className="mt-2 flex space-x-2">
                                     <img

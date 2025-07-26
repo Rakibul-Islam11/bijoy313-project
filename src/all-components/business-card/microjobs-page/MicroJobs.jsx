@@ -425,7 +425,7 @@ const MicroJobs = () => {
                 </main>
 
                 <footer className="bg-white/80 backdrop-blur-lg p-4 text-center text-sm text-gray-600 border-t border-white/20">
-                    © 2025 Capital eWork - All Rights Reserved
+                    © 2025 Bijoy313 - All Rights Reserved
                 </footer>
             </div>
 

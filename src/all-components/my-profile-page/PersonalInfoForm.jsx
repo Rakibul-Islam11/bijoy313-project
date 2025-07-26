@@ -30,7 +30,7 @@ const PersonalInfoForm = () => {
     const fetchUserData = async () => {
         if (user) {
             try {
-                const response = await fetch(`https://bijoy-server.vercel.app/users/by-uid/${user.uid}`);
+                const response = await fetch(`https://bijoy-server-nu.vercel.app/users/by-uid/${user.uid}`);
                 const data = await response.json();
                 if (data.success) {
                     setUserProfile(data.user);
@@ -119,7 +119,7 @@ const PersonalInfoForm = () => {
 
             };
 
-            const res = await axios.post("https://bijoy-server.vercel.app/api/update-name", payload);
+            const res = await axios.post("https://bijoy-server-nu.vercel.app/api/update-name", payload);
             setMessage(res.data.message);
         } catch (error) {
             console.error("Error updating profile:", error);
@@ -210,7 +210,7 @@ const PersonalInfoForm = () => {
                                     />
                                 </div>
                             </div>
-                       </div>
+                        </div>
                         <div className="flex flex-row justify-between">
                             {/* Gender */}
                             <div>
@@ -244,7 +244,7 @@ const PersonalInfoForm = () => {
                                 />
                             </div>
                         </div>
-                       
+
 
                         {/* Photo Upload */}
                         <div className="flex flex-row justify-between items-center">

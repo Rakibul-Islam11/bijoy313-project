@@ -17,7 +17,7 @@ const BalanceShow = () => {
         const fetchBalance = async () => {
             try {
                 const { data } = await axios.get(
-                    `https://bijoy-server.vercel.app/api/wallets/balance/${user.uid}`
+                    `https://bijoy-server-nu.vercel.app/api/wallets/balance/${user.uid}`
                 );
 
                 if (data.success) {
@@ -42,7 +42,7 @@ const BalanceShow = () => {
 
         fetchBalance();
 
-    
+
         const id = setInterval(fetchBalance, 1000);
         return () => clearInterval(id);
     }, [user?.uid, loading]);

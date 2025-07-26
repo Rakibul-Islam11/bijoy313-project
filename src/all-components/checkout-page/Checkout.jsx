@@ -36,7 +36,7 @@ const Checkout = () => {
 
         const fetchCart = async () => {
             try {
-                const res = await axios.get(`https://bijoy-server.vercel.app/api/carts/${user.uid}`);
+                const res = await axios.get(`https://bijoy-server-nu.vercel.app/api/carts/${user.uid}`);
                 if (res.data.success) {
                     setCartItems(res.data.cartItems);
                 }
@@ -61,9 +61,9 @@ const Checkout = () => {
                 variant: newItem.selectedWeight || newItem.selectedColor || null
             };
 
-            const res = await axios.post(`https://bijoy-server.vercel.app/api/carts/${user.uid}`, payload);
+            const res = await axios.post(`https://bijoy-server-nu.vercel.app/api/carts/${user.uid}`, payload);
             if (res.data.success) {
-                const cartRes = await axios.get(`https://bijoy-server.vercel.app/api/carts/${user.uid}`);
+                const cartRes = await axios.get(`https://bijoy-server-nu.vercel.app/api/carts/${user.uid}`);
                 if (cartRes.data.success) {
                     setCartItems(cartRes.data.cartItems);
                     setNewItem(null);
@@ -166,7 +166,7 @@ const Checkout = () => {
     const handleRemoveItem = async (cartItemId) => {
         setRemovingItemId(cartItemId);
         try {
-            const res = await axios.delete(`https://bijoy-server.vercel.app/api/carts/${cartItemId}`);
+            const res = await axios.delete(`https://bijoy-server-nu.vercel.app/api/carts/${cartItemId}`);
             if (res.data.success) {
                 setCartItems(cartItems.filter(item => item._id !== cartItemId));
             }
@@ -182,7 +182,7 @@ const Checkout = () => {
 
         setUpdatingItemId(cartItemId);
         try {
-            const res = await axios.put(`https://bijoy-server.vercel.app/api/carts/${cartItemId}`, {
+            const res = await axios.put(`https://bijoy-server-nu.vercel.app/api/carts/${cartItemId}`, {
                 quantity: newQuantity
             });
 
@@ -208,7 +208,7 @@ const Checkout = () => {
         setCouponError('');
 
         try {
-            const response = await axios.post('https://bijoy-server.vercel.app/api/validate-coupon', {
+            const response = await axios.post('https://bijoy-server-nu.vercel.app/api/validate-coupon', {
                 couponCode,
                 userId: user?.uid,
                 totalAmount: grandTotalBeforeDiscount
@@ -266,7 +266,7 @@ const Checkout = () => {
     };
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 text-black">
+        <div className="md:max-w-7xl mx-auto md:px-4 sm:px-6 lg:px-8 py-4 sm:py-6 text-black mt-10">
             <div className="bg-white rounded-xl shadow-lg overflow-hidden min-h-[calc(100vh-8rem)] flex flex-col">
                 {/* Header Section */}
                 <div className="p-4 sm:p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">

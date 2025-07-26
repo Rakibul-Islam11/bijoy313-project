@@ -28,7 +28,7 @@ const NameChange = () => {
     const fetchUserData = async () => {
         if (user) {
             try {
-                const response = await fetch(`https://bijoy-server.vercel.app/users/by-uid/${user.uid}`);
+                const response = await fetch(`https://bijoy-server-nu.vercel.app/users/by-uid/${user.uid}`);
                 const data = await response.json();
                 if (data.success) {
                     setUserProfile(data.user);
@@ -114,10 +114,10 @@ const NameChange = () => {
                 photoURL: uploadedImageUrl,
                 gender: newGender,
                 profession: newProfession,
-                
+
             };
 
-            const res = await axios.post("https://bijoy-server.vercel.app/api/update-name", payload);
+            const res = await axios.post("https://bijoy-server-nu.vercel.app/api/update-name", payload);
             setMessage(res.data.message);
         } catch (error) {
             console.error("Error updating profile:", error);

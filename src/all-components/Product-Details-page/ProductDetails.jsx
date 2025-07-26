@@ -57,14 +57,14 @@ const ProductDetails = () => {
     const title = product?.productName || 'Check out this product';
     const [activeTab, setActiveTab] = useState("productDetails");
 
-    
+
     useEffect(() => {
         const fetchReviews = async () => {
             if (!productId) return;
 
             try {
                 const response = await axios.get(
-                    `https://bijoy-server.vercel.app/api/reviews`,
+                    `https://bijoy-server-nu.vercel.app/api/reviews`,
                     { params: { productId } }
                 );
 
@@ -94,7 +94,7 @@ const ProductDetails = () => {
                 setLoading(true);
                 setError(null);
 
-                const res = await axios.get(`https://bijoy-server.vercel.app/api/products/${productId}`);
+                const res = await axios.get(`https://bijoy-server-nu.vercel.app/api/products/${productId}`);
 
                 if (res.data?.product) {
                     setProduct(res.data.product);
@@ -110,7 +110,7 @@ const ProductDetails = () => {
                     }
 
                     const reviewsRes = await axios.get(
-                        `https://bijoy-server.vercel.app/api/reviews`,
+                        `https://bijoy-server-nu.vercel.app/api/reviews`,
                         { params: { productId } }
                     );
 
@@ -158,7 +158,7 @@ const ProductDetails = () => {
                 }
 
                 const response = await axios.get(
-                    `https://bijoy-server.vercel.app/api/carts/check/${user.uid}/${product._id}`,
+                    `https://bijoy-server-nu.vercel.app/api/carts/check/${user.uid}/${product._id}`,
                     {
                         params: { variantType, variantValue },
                         headers: {
@@ -185,7 +185,7 @@ const ProductDetails = () => {
 
             try {
                 const response = await axios.get(
-                    `https://bijoy-server.vercel.app/api/favorites/check/${user.uid}/${product._id}`,
+                    `https://bijoy-server-nu.vercel.app/api/favorites/check/${user.uid}/${product._id}`,
                     {
                         headers: {
                             'Authorization': `Bearer ${await user.getIdToken()}`
@@ -237,7 +237,7 @@ const ProductDetails = () => {
         try {
             if (isInCart) {
                 const response = await axios.delete(
-                    `https://bijoy-server.vercel.app/api/carts/${cartItemId}`,
+                    `https://bijoy-server-nu.vercel.app/api/carts/${cartItemId}`,
                     {
                         headers: {
                             'Authorization': `Bearer ${await user.getIdToken()}`
@@ -273,7 +273,7 @@ const ProductDetails = () => {
                 }
 
                 const response = await axios.post(
-                    'https://bijoy-server.vercel.app/api/carts',
+                    'https://bijoy-server-nu.vercel.app/api/carts',
                     {
                         userId: user.uid,
                         productId: product._id,
@@ -314,7 +314,7 @@ const ProductDetails = () => {
         try {
             if (isFavorite) {
                 const response = await axios.delete(
-                    `https://bijoy-server.vercel.app/api/favorites/${favoriteId}`,
+                    `https://bijoy-server-nu.vercel.app/api/favorites/${favoriteId}`,
                     {
                         headers: {
                             'Authorization': `Bearer ${await user.getIdToken()}`
@@ -329,7 +329,7 @@ const ProductDetails = () => {
                 }
             } else {
                 const response = await axios.post(
-                    'https://bijoy-server.vercel.app/api/favorites',
+                    'https://bijoy-server-nu.vercel.app/api/favorites',
                     {
                         userId: user.uid,
                         productId: product._id
@@ -525,11 +525,11 @@ const ProductDetails = () => {
                                             </div>
                                         </SwiperSlide>
                                     ))}
-                                    
-                                        <div className="absolute top-4 right-4 bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full z-10 shadow-lg">
-                                            % OFF
-                                        </div>
-                                    
+
+                                    <div className="absolute top-4 right-4 bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full z-10 shadow-lg">
+                                        % OFF
+                                    </div>
+
                                 </Swiper>
 
                                 {hasMultipleImages && (

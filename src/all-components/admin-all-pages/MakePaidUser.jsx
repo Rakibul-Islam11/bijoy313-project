@@ -6,10 +6,80 @@ const MakePaidUser = () => {
     const [paidUsers, setPaidUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const [verifiedUserInfo, setVerifiedUserInfo] = useState(null);
+    console.log(verifiedUserInfo?.uid);
+    const [fullUserData, setFullUserData] = useState(null);
+    const [referrerUser, setReferrerUser] = useState(null);
+
+    console.log(fullUserData);
+    console.log(referrerUser);
+    console.log(fullUserData?.referralCode);
+
+
+
+
+    //এটা যে paid হবে তার সকল profile
+    useEffect(() => {
+        const fetchFullUserByUID = async () => {
+            if (!verifiedUserInfo?.uid) return;
+            try {
+                const res = await axios.get(`https://bijoy-server-nu.vercel.app/api/users/by-firebase-uid/${verifiedUserInfo.uid}`);
+                console.log("🔥 Full User Info From DB:", res.data);
+
+                setFullUserData(res.data); // ✅ এখানে সেট করে রাখছেন fullUserData তে
+            } catch (err) {
+                console.error("❌ Failed to fetch user by firebaseUID:", err);
+            }
+        };
+
+        fetchFullUserByUID();
+    }, [verifiedUserInfo?.uid]);
+
+
+    // এখানে যা আন্ডারে নতুন পেইড user রেফার হয়েছে তার uid কোজা হল
+    useEffect(() => {
+        const fetchReferrerByCode = async () => {
+            if (!fullUserData?.referredBy) return;
+
+            try {
+                const res = await axios.get(
+                    `https://bijoy-server-nu.vercel.app/api/users/find-referrer-by-code/${fullUserData.referredBy}`
+                );
+
+                console.log("🎯 Referrer User:", res.data);
+                setReferrerUser(res.data);
+            } catch (err) {
+                console.error("❌ Failed to fetch referrer user:", err);
+                setReferrerUser(null);
+            }
+        };
+
+        fetchReferrerByCode();
+    }, [fullUserData?.referredBy]);
+
+    //তার wallet profile খজা হলো যার রেফার দিয়ে নতুন পেইড user paid হলো and 120 tk add করা হলো
+    const addEarningToWallet = async (firebaseUID) => {
+        try {
+            const res = await axios.patch(`https://bijoy-server-nu.vercel.app/api/wallets/add-earning/${firebaseUID}`);
+            console.log("Wallet updated:", res.data);
+        } catch (err) {
+            console.error("Failed to update wallet earning:", err);
+        }
+    };
+
+    useEffect(() => {
+        if (!referrerUser?.firebaseUID) return;
+
+        // শুধু একবার কল করা হবে, interval ছাড়াই
+        addEarningToWallet(referrerUser.firebaseUID);
+
+    }, [referrerUser?.firebaseUID]);
+
+
 
     const fetchPaidUsers = async () => {
         try {
-            const res = await axios.get('https://bijoy-server.vercel.app/api/paid-users/details');
+            const res = await axios.get('https://bijoy-server-nu.vercel.app/api/paid-users/details');
             const sortedData = res.data.sort((a, b) =>
                 new Date(b.createdAt) - new Date(a.createdAt)
             );
@@ -42,9 +112,16 @@ const MakePaidUser = () => {
 
     const handlePaymentUpdate = async (userId) => {
         try {
-            await axios.patch(`https://bijoy-server.vercel.app/api/users/update-payment/${userId}`, {
+            await axios.patch(`https://bijoy-server-nu.vercel.app/api/users/update-payment/${userId}`, {
                 payment: "paid"
             });
+
+            const updatedUser = paidUsers.find(item => item.userInfo?._id === userId);
+            if (updatedUser) {
+                setVerifiedUserInfo(updatedUser); // ✅ পুরো user object রাখবেন
+            }
+
+
             setPaidUsers(prev =>
                 prev.map(item =>
                     item.userInfo && item.userInfo._id === userId
@@ -56,6 +133,7 @@ const MakePaidUser = () => {
             console.error("Failed to update payment:", err);
         }
     };
+
 
     const handleRefresh = () => {
         setRefreshing(true);
@@ -71,7 +149,7 @@ const MakePaidUser = () => {
     }
 
     return (
-        <div className="p-4 bg-gray-50 min-h-screen">
+        <div className="p-4 bg-gray-50 min-h-screen text-black">
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
                     <h2 className="text-xl font-semibold text-gray-800">Payment Verification</h2>
@@ -113,6 +191,12 @@ const MakePaidUser = () => {
                                                     <div className="text-xs text-gray-500">
                                                         {item.userInfo?.email || 'N/A'}
                                                     </div>
+                                                    {/* <div className="text-xs text-gray-500">
+                                                        refer code: {fullUserData?.referralCode || 'N/A'}
+                                                    </div>
+                                                    <div className="text-xs text-gray-500">
+                                                        referBy: {fullUserData?.referredBy || 'N/A'}
+                                                    </div> */}
                                                 </div>
                                             </div>
                                         </td>

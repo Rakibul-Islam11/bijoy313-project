@@ -33,7 +33,7 @@ const Navbar = () => {
 
         const fetchCart = async () => {
             try {
-                const res = await axios.get(`https://bijoy-server.vercel.app/api/carts/${user.uid}`);
+                const res = await axios.get(`https://bijoy-server-nu.vercel.app/api/carts/${user.uid}`);
                 if (res.data.success) {
                     setCartItems(res.data.cartItems);
                 }
@@ -67,7 +67,7 @@ const Navbar = () => {
     const fetchUserData = async () => {
         if (user) {
             try {
-                const response = await fetch(`https://bijoy-server.vercel.app/users/by-uid/${user.uid}`);
+                const response = await fetch(`https://bijoy-server-nu.vercel.app/users/by-uid/${user.uid}`);
                 const data = await response.json();
                 if (data.success) {
                     setUserProfile(data.user);
@@ -483,7 +483,7 @@ const Navbar = () => {
                                             userProfile && <img
                                                 src={userProfile.photoURL}
                                                 alt="Profile"
-                                                className="h-8 w-8 rounded-full border-2 border-white object-cover group-hover:border-pink-200 transition-colors"
+                                                className="h-9 w-9 rounded-full border-2 border-white object-cover group-hover:border-pink-200 transition-colors"
                                             />
                                         }
 

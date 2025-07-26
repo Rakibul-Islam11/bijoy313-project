@@ -8,7 +8,7 @@ const ProductDetailsAditional = ({ productId }) => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const res = await axios.get(`https://bijoy-server.vercel.app/api/products/${productId}`);
+                const res = await axios.get(`https://bijoy-server-nu.vercel.app/api/products/${productId}`);
                 setProduct(res.data.product);
             } catch (error) {
                 console.error("Error fetching product:", error);

@@ -26,7 +26,7 @@ const Address = () => {
     const fetchUserData = async () => {
         if (user) {
             try {
-                const response = await fetch(`https://bijoy-server.vercel.app/users/by-uid/${user.uid}`);
+                const response = await fetch(`https://bijoy-server-nu.vercel.app/users/by-uid/${user.uid}`);
                 const data = await response.json();
                 if (data.success) setUserProfile(data.user);
             } catch (error) {
@@ -37,7 +37,7 @@ const Address = () => {
 
     useEffect(() => {
         if (!loading) fetchUserData();
-    }, [user, loading]); 
+    }, [user, loading]);
 
     const handleDivisionChange = (e) => {
         const division = e.target.value;
@@ -73,7 +73,7 @@ const Address = () => {
 
         try {
             const res = await axios.put(
-                `https://bijoy-server.vercel.app/api/users/address/${userProfile.firebaseUID}`,
+                `https://bijoy-server-nu.vercel.app/api/users/address/${userProfile.firebaseUID}`,
                 payload,
                 {
                     headers: {

@@ -26,7 +26,7 @@ const ActiveJobProvider = ({ children }) => {
         if (user?.uid) {
             // First fetch immediately
             const fetchJobHistory = () => {
-                axios.get(`https://bijoy-server.vercel.app/api/active-jobs-reports/${user.uid}`)
+                axios.get(`https://bijoy-server-nu.vercel.app/api/active-jobs-reports/${user.uid}`)
                     .then(res => {
                         if (res.data.success) {
                             setJobHistoryReport(res.data.data);
@@ -51,7 +51,7 @@ const ActiveJobProvider = ({ children }) => {
 
         const fetchJobs = async () => {
             try {
-                const res = await axios.get(`https://bijoy-server.vercel.app/api/active-jobs-reports/${user.uid}`);
+                const res = await axios.get(`https://bijoy-server-nu.vercel.app/api/active-jobs-reports/${user.uid}`);
                 if (res.data.success) {
                     setJobs(res.data.data);
 
@@ -86,7 +86,7 @@ const ActiveJobProvider = ({ children }) => {
         const fetchBalance = async () => {
             try {
                 const { data } = await axios.get(
-                    `https://bijoy-server.vercel.app/api/wallets/balance/${user.uid}`
+                    `https://bijoy-server-nu.vercel.app/api/wallets/balance/${user.uid}`
                 );
 
                 if (data.success) {

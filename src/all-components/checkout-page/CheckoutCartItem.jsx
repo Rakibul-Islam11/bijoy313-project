@@ -18,7 +18,7 @@ const CheckoutCartItem = ({ isOpen, onClose }) => {
 
         const fetchCart = async () => {
             try {
-                const res = await axios.get(`https://bijoy-server.vercel.app/api/carts/${user.uid}`);
+                const res = await axios.get(`https://bijoy-server-nu.vercel.app/api/carts/${user.uid}`);
                 if (res.data.success) {
                     setCartItems(res.data.cartItems);
                 }
@@ -60,7 +60,7 @@ const CheckoutCartItem = ({ isOpen, onClose }) => {
     const handleRemoveItem = async (cartItemId) => {
         setRemovingItemId(cartItemId);
         try {
-            const res = await axios.delete(`https://bijoy-server.vercel.app/api/carts/${cartItemId}`);
+            const res = await axios.delete(`https://bijoy-server-nu.vercel.app/api/carts/${cartItemId}`);
             if (res.data.success) {
                 setCartItems(cartItems.filter(item => item._id !== cartItemId));
             }
@@ -76,7 +76,7 @@ const CheckoutCartItem = ({ isOpen, onClose }) => {
 
         setUpdatingItemId(cartItemId);
         try {
-            const res = await axios.put(`https://bijoy-server.vercel.app/api/carts/${cartItemId}`, {
+            const res = await axios.put(`https://bijoy-server-nu.vercel.app/api/carts/${cartItemId}`, {
                 quantity: newQuantity
             });
 
@@ -218,7 +218,7 @@ const CheckoutCartItem = ({ isOpen, onClose }) => {
                                     })}
                                 </div>
 
-                            
+
                             </>
                         )}
                     </div>

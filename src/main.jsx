@@ -55,6 +55,13 @@ import Deemo from './all-components/user-dashboard/active-jobs/Deemo.jsx';
 import DemoOne from './all-components/admin-all-pages/DemoOne.jsx';
 import DemoTwo from './all-components/admin-all-pages/DemoTwo.jsx';
 import DemoThree from './all-components/admin-all-pages/DemoThree.jsx';
+import DemoTwoo from './all-components/user-dashboard/DemoTwoo.jsx';
+import Dmo from './all-components/admin-all-pages/Dmo.jsx';
+
+import Success from './all-components/admin-all-pages/Success.jsx';
+import Fail from './all-components/admin-all-pages/Fail.jsx';
+import Cancel from './all-components/admin-all-pages/Cancel.jsx';
+import PaymentReports from './all-components/admin-all-pages/PaymentReports.jsx';
 
 
 const routes = createBrowserRouter([
@@ -180,6 +187,10 @@ const routes = createBrowserRouter([
         element: <PaymentPaidMemberLandng></PaymentPaidMemberLandng>
       },
       {
+        path: '/demo-two',
+        element: <DemoTwoo></DemoTwoo>
+      },
+      {
         path: '/admin',
         element: <AdminLogin></AdminLogin>
       },
@@ -214,6 +225,27 @@ const routes = createBrowserRouter([
       {
         path: '/grahol-chaneel',
         element: <GrahokChannel></GrahokChannel>
+      },
+      {
+        path: '/dmo',
+        element: <Dmo></Dmo>
+      },
+     
+      {
+        path: "/success",
+        element: <Success></Success>
+      },
+      {
+        path: "/fail",
+        element: <Fail></Fail>
+      },
+      {
+        path: "cancel",
+        element: <Cancel></Cancel>
+      },
+      {
+        path: '/payment-report',
+        element: <PaymentReports></PaymentReports>
       },
       // In your main routes configuration
       {

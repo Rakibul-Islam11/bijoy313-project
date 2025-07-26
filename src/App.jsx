@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom'; // ✅ useLocation import
 import Navbar from './all-components/navbar/Navbar';
 import './App.css';
 import BottomNavbar from './all-components/bottom-navbar/BottomNavbar';
@@ -10,6 +10,7 @@ import VerifyAlertPage from './all-components/paid-vierify-now/VerifyAlertPage';
 
 function App() {
   const [showAlert, setShowAlert] = useState(false);
+  const location = useLocation(); // ✅ বর্তমান route এর location
 
   useEffect(() => {
     const alreadyShown = localStorage.getItem('verifyAlertShown');
@@ -25,6 +26,9 @@ function App() {
 
   const closeAlert = () => setShowAlert(false);
 
+  // ✅ এই রুটে Footer হাইড করতে চাচ্ছেন
+  const hideFooter = location.pathname === '/micro-job';
+
   return (
     <>
       <ScrollReSet />
@@ -32,12 +36,12 @@ function App() {
         <Navbar />
         <Outlet />
         <MobileMenu />
-        <Footer />
+        {!hideFooter && <Footer />} {/* ✅ conditionally render Footer */}
         <BottomNavbar />
       </div>
 
       {showAlert && (
-        <div className="fixed inset-0 z-[999]  bg-opacity-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[999] bg-opacity-50 flex items-center justify-center p-4">
           <VerifyAlertPage onClose={closeAlert} />
         </div>
       )}

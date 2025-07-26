@@ -22,7 +22,7 @@ const FavouriteProducts = () => {
             try {
                 setLoading(true);
                 const res = await axios.get(
-                    `https://bijoy-server.vercel.app/api/favorites/${user.uid}?page=${page}&limit=${limit}`
+                    `https://bijoy-server-nu.vercel.app/api/favorites/${user.uid}?page=${page}&limit=${limit}`
                 );
 
                 if (res.data?.favorites?.length > 0) {

@@ -10,7 +10,7 @@ const GetUserInfo = ({ children }) => {
     const fetchUserData = async () => {
         if (user) {
             try {
-                const response = await fetch(`https://bijoy-server.vercel.app/users/by-uid/${user.uid}`);
+                const response = await fetch(`https://bijoy-server-nu.vercel.app/users/by-uid/${user.uid}`);
                 const data = await response.json();
                 if (data.success) {
                     setUserProfile(data.user);
@@ -30,14 +30,14 @@ const GetUserInfo = ({ children }) => {
             return () => clearInterval(interval);
         }
     }, [user, loading]);
-    
+
     const serveData = {
         userProfile
     };
     return (
 
         <GetUserInfoContext.Provider value={serveData}>
-                {children}
+            {children}
         </GetUserInfoContext.Provider>
     );
 };

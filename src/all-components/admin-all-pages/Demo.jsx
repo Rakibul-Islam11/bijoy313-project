@@ -8,7 +8,7 @@ const Demo = () => {
     const [message, setMessage] = useState('');
 
     useEffect(() => {
-        axios.get('https://bijoy-server.vercel.app/api/active-job-update')
+        axios.get('https://bijoy-server-nu.vercel.app/api/active-job-update')
             .then(res => setJobs(res.data.jobs))
             .catch(err => console.error(err));
     }, []);
@@ -29,7 +29,7 @@ const Demo = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.put(`https://bijoy-server.vercel.app/api/active-job-update/${selectedJobId}`, formData);
+            const res = await axios.put(`https://bijoy-server-nu.vercel.app/api/active-job-update/${selectedJobId}`, formData);
             setMessage(res.data.message);
         } catch (error) {
             console.error(error);

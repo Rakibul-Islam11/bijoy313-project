@@ -324,8 +324,8 @@ const OverviewSection = ({ userData }) => {
                             <p className="font-semibold text-lg">💰 Wallet Summary</p>
                             <div className="mt-2">
                                 <h3 className="font-medium opacity-90">Total Balance</h3>
-                                <p className="text-2xl font-bold my-1">৳ {totalBalance.toLocaleString()}</p>
-                                <p className="text-sm opacity-80">Available: ৳ {availableBalance.toLocaleString()}</p>
+                                <p className="text-2xl font-bold my-1">৳ {balance}</p>
+                                <p className="text-sm opacity-80">Available: ৳ {balance}</p>
                             </div>
                         </div>
                     </summary>

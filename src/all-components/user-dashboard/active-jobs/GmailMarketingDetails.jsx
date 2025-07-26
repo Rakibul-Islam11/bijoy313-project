@@ -30,32 +30,32 @@ const GmailMarketingDetails = () => {
     const navigate = useNavigate();
     const intervalRef = useRef(null);
 
-     useEffect(() => {
-            const fetchJobData = () => {
-                axios
-                    .get('https://bijoy-server.vercel.app/api/active-job-update/gmail-marketing')
-                    .then(res => {
-                        if (res.data.success) {
-                            setJobData(res.data.data);
-                            setError(null); // Reset error if success
-                        } else {
-                            setError(res.data.message);
-                        }
-                    })
-                    .catch(err => {
-                        setError(err.message);
-                    });
-            };
-    
-            // Initial fetch
-            fetchJobData();
-    
-            // Set interval to refetch every 5 seconds
-            const interval = setInterval(fetchJobData, 2000);
-    
-            // Cleanup on component unmount
-            return () => clearInterval(interval);
-        }, []);
+    useEffect(() => {
+        const fetchJobData = () => {
+            axios
+                .get('https://bijoy-server-nu.vercel.app/api/active-job-update/gmail-marketing')
+                .then(res => {
+                    if (res.data.success) {
+                        setJobData(res.data.data);
+                        setError(null); // Reset error if success
+                    } else {
+                        setError(res.data.message);
+                    }
+                })
+                .catch(err => {
+                    setError(err.message);
+                });
+        };
+
+        // Initial fetch
+        fetchJobData();
+
+        // Set interval to refetch every 5 seconds
+        const interval = setInterval(fetchJobData, 2000);
+
+        // Cleanup on component unmount
+        return () => clearInterval(interval);
+    }, []);
     const showEarningLimitWarning = () => {
         MySwal.fire({
             icon: 'info',
@@ -86,7 +86,7 @@ const GmailMarketingDetails = () => {
         }
 
         try {
-            const response = await axios.get(`https://bijoy-server.vercel.app/users/by-uid/${user.uid}`);
+            const response = await axios.get(`https://bijoy-server-nu.vercel.app/users/by-uid/${user.uid}`);
             if (response.data.success) {
                 setUserProfile(response.data.user);
                 if (totalBalance >= 200 && response.data.user.payment === "unpaid" && !showEarningLimitAlert) {
@@ -162,7 +162,7 @@ const GmailMarketingDetails = () => {
                 status: 'pending'
             };
 
-            const res = await axios.post("https://bijoy-server.vercel.app/api/active-jobs", jobData);
+            const res = await axios.post("https://bijoy-server-nu.vercel.app/api/active-jobs", jobData);
 
             if (res.data.success) {
                 MySwal.fire({
